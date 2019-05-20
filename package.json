@@ -1,0 +1,32 @@
+{
+  "name": "Alpacash",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.4.0",
+    "native-base": "^2.12.1",
+    "react": "16.8.3",
+    "react-native": "0.59.8",
+    "react-native-gesture-handler": "^1.2.1",
+    "react-native-numeric-input": "^1.6.5",
+    "react-native-paper": "^2.15.2",
+    "react-native-vector-icons": "^6.4.2",
+    "react-navigation": "^3.11.0",
+    "react-navigation-material-bottom-tabs": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.4",
+    "@babel/runtime": "7.4.4",
+    "babel-jest": "24.8.0",
+    "jest": "24.8.0",
+    "metro-react-native-babel-preset": "0.54.1",
+    "react-test-renderer": "16.8.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
