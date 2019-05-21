@@ -8,18 +8,63 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { Container, Header, Content, Form, Item, Input } from 'native-base';
+import firebase from 'react-native-firebase';
 
 /*
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
 export default class Trans extends Component {
-    state = {
-      isModalVisible: false
-    };
+    constructor() {
+      super();
+      this.ref = firebase.firestore().collection('trans');
+      this.state = {
+        isModalVisible: false,
+        title: '',
+        amount: '',
+        category: '',
+        date: '',
+      }
+    }
+    
+    updateTransactionTitle(title) {
+      this.setState({title: title })
+    }
 
-    toggleModal = () => {
+    updateTransactionAmount(amount) {
+      this.setState({amount: amount})
+    }
+
+    updateTransactionCategory(category) {
+      this.setState({category: category})
+    }
+
+    updateTransactionDate(date) {
+      this.setState({date: date})
+    }
+
+    addTransaction() {
+      this.ref.add({
+        title: this.state.title,
+        amount: this.state.amount,
+        category: this.state.category,
+        date: this.state.date
+      });
+      this.setState({
+        title: '',
+        amount: '',
+        category: '',
+        date: '',
+      });
+    }
+
+    toggleModal() {
       this.setState({ isModalVisible: !this.state.isModalVisible });
+    }
+    
+    confirmButton = () => {
+      this.toggleModal();
+      this.addTransaction();
     };
 
     render() {
@@ -34,28 +79,50 @@ export default class Trans extends Component {
 
                 
                 <View style = {styles.addButton}>
-                  <Button title="Add transaction" onPress={this.toggleModal} />
+                  <Button title="Add transaction" onPress={() => this.toggleModal()} />
                   <Modal isVisible={this.state.isModalVisible}>
                 
                       <View style = {styles.addButtonWindow}>
                         <Form>
                           <Item>
-                            <Input placeholder = "Name"/>
+                            <Input 
+                              placeholder = "Title"
+                              value = {this.state.title}
+                              onChangeText={(text) => this.updateTransactionTitle(text)}
+                            />
                           </Item>
                           <Item>
-                            <Input placeholder = "Amount"/>
+                            <Input 
+                              placeholder = "Amount"
+                              value = {this.state.amount}
+                              onChangeText={(text) => this.updateTransactionAmount(text)}
+                            />
                           </Item>
                           <Item>
-                            <Input placeholder = "Category"/>
+                            <Input 
+                              placeholder = "Category"
+                              value = {this.state.category}
+                              onChangeText={(text) => this.updateTransactionCategory(text)}
+                            />
                           </Item>
                           <Item>
-                            <Input placeholder = "Date"/>
+                            <Input 
+                              placeholder = "Date"
+                              value = {this.state.date}
+                              onChangeText={(text) => this.updateTransactionDate(text)}
+                            />
                           </Item>
                         </Form>
                       </View>
                       
-                    <Button title="Confirm" onPress={this.toggleModal} />
-                    <Button title="Cancel" onPress={this.toggleModal} />
+                    <Button 
+                      title="Confirm" 
+                      disabled={!this.state.title.length ||
+                                !this.state.amount.length ||
+                                !this.state.category.length ||
+                                !this.state.date.length}
+                      onPress={this.confirmButton}/>
+                    <Button title="Cancel" onPress={() => this.toggleModal()} />
                       
                   </Modal>
                 </View>
