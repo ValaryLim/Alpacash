@@ -11,6 +11,7 @@
     "native-base": "^2.12.1",
     "react": "16.8.3",
     "react-native": "0.59.8",
+    "react-native-firebase": "^5.3.1",
     "react-native-gesture-handler": "^1.2.1",
     "react-native-numeric-input": "^1.6.5",
     "react-native-paper": "^2.15.2",

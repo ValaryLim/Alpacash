@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "998257372938",
+    "firebase_url": "https://alpacash-fce2e.firebaseio.com",
+    "project_id": "alpacash-fce2e",
+    "storage_bucket": "alpacash-fce2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998257372938:android:53935ed94287f924",
+        "android_client_info": {
+          "package_name": "com.alpacash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998257372938-lb3bghm1u8ns9dgubdkecqbiace4eu9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4N4JzjhUAsMtWahdm99neFuz3vY9indc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998257372938-lb3bghm1u8ns9dgubdkecqbiace4eu9e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
