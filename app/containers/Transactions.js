@@ -3,15 +3,25 @@ import {
     StyleSheet,
     View, 
     Text, 
-    TextInput, 
     ScrollView, 
-    TouchableOpacity,
+    Button
 } from "react-native";
+import Modal from "react-native-modal";
+import { Container, Header, Content, Form, Item, Input } from 'native-base';
+
 /*
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
 export default class Trans extends Component {
+    state = {
+      isModalVisible: false
+    };
+
+    toggleModal = () => {
+      this.setState({ isModalVisible: !this.state.isModalVisible });
+    };
+
     render() {
         return (
             <View>
@@ -22,21 +32,37 @@ export default class Trans extends Component {
                 <ScrollView style={styles.scrollContainer}>
                 </ScrollView>
 
-                <View style={styles.footer}>
-                    <TextInput
-                        style = {styles.textInput}
-                        placeholder="trans"
-                        placeholderTextColor='white'
-                        underlineColorAndroid='transparent'>
-                    </TextInput>
+                
+                <View style = {styles.addButton}>
+                  <Button title="Add transaction" onPress={this.toggleModal} />
+                  <Modal isVisible={this.state.isModalVisible}>
+                
+                      <View style = {styles.addButtonWindow}>
+                        <Form>
+                          <Item>
+                            <Input placeholder = "Name"/>
+                          </Item>
+                          <Item>
+                            <Input placeholder = "Amount"/>
+                          </Item>
+                          <Item>
+                            <Input placeholder = "Category"/>
+                          </Item>
+                          <Item>
+                            <Input placeholder = "Date"/>
+                          </Item>
+                        </Form>
+                      </View>
+                      
+                    <Button title="Confirm" onPress={this.toggleModal} />
+                    <Button title="Cancel" onPress={this.toggleModal} />
+                      
+                  </Modal>
                 </View>
-
-                <TouchableOpacity style={styles.addButton}>
-                    <Text style={styles.addButtonText}>
-                        + Add Transaction
-                    </Text>
-                </TouchableOpacity>
+                
             </View>
+            
+            
         );
     }
 }
@@ -82,12 +108,12 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     zIndex: 11,
-    right: 20,
-    bottom: 90,
+    top: 100,
+    right: 40,
     backgroundColor: "#e91e63",
-    width: 90,
-    height: 90,
-    borderRadius: 59,
+    width: 300,
+    height: 40,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
     elevation: 8,
@@ -96,4 +122,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 10,
   },
+  addButtonWindow: {
+    backgroundColor: "#00B386",
+    borderRadius: 5,
+  }
 });
