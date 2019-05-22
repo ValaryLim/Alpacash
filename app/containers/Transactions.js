@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import { 
     StyleSheet,
+    TouchableOpacity,
     View, 
     Text, 
     ScrollView, 
     Button
 } from "react-native";
+import { Form, 
+         Item, 
+         Input 
+} from 'native-base';
 import Modal from "react-native-modal";
-import { Container, Header, Content, Form, Item, Input } from 'native-base';
 import firebase from 'react-native-firebase';
+import DatePicker from 'react-native-datepicker';
 
 /*
     other import statements or 
@@ -20,6 +25,7 @@ export default class Trans extends Component {
       this.ref = firebase.firestore().collection('trans');
       this.state = {
         isModalVisible: false,
+        isDateTimePickerVisible: false,
         title: '',
         amount: '',
         category: '',
@@ -54,7 +60,7 @@ export default class Trans extends Component {
         title: '',
         amount: '',
         category: '',
-        date: '',
+        date: '15-08-1999',
       });
     }
 
@@ -76,8 +82,8 @@ export default class Trans extends Component {
 
                 <ScrollView style={styles.scrollContainer}>
                 </ScrollView>
+                      
 
-                
                 <View style = {styles.addButton}>
                   <Button title="Add transaction" onPress={() => this.toggleModal()} />
                   <Modal isVisible={this.state.isModalVisible}>
@@ -94,6 +100,7 @@ export default class Trans extends Component {
                           <Item>
                             <Input 
                               placeholder = "Amount"
+                              keyboardType = 'numeric'
                               value = {this.state.amount}
                               onChangeText={(text) => this.updateTransactionAmount(text)}
                             />
@@ -105,15 +112,30 @@ export default class Trans extends Component {
                               onChangeText={(text) => this.updateTransactionCategory(text)}
                             />
                           </Item>
-                          <Item>
-                            <Input 
-                              placeholder = "Date"
-                              value = {this.state.date}
-                              onChangeText={(text) => this.updateTransactionDate(text)}
-                            />
-                          </Item>
                         </Form>
-                      </View>
+                        <DatePicker
+                          style={{width: 200}}
+                          date={this.state.date} //initial date from state
+                          mode="date" //The enum of date, datetime and time
+                          placeholder="Select Date"
+                          format="DD-MM-YYYY"
+                          confirmBtnText="Confirm"
+                          cancelBtnText="Cancel"
+                          customStyles={{
+                            dateIcon: {
+                              position: 'absolute',
+                              left: 0,
+                              top: 4,
+                              marginLeft: 10
+                            },
+                            dateInput: {
+                              marginLeft: 36,
+                              fontSize: 30
+                            }
+                          }}
+                          onDateChange={(date) => {this.updateTransactionDate(date)}}
+                        />
+                        </View>
                       
                     <Button 
                       title="Confirm" 
