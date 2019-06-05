@@ -11,7 +11,7 @@ import {
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
-export default class Trans extends Component {
+export default class Transactions extends Component {
     render() {
         return (
             <View>

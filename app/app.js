@@ -68,21 +68,3 @@ const TabNavigator = createMaterialBottomTabNavigator(
 );  
   
 export default createAppContainer(TabNavigator);
-
-// import React, { Component } from "react";
-
-
-// // for navigation
-// import 
-
-// /*
-//     other import statements or 
-//     JS variables like const here - can be dummy datas to use for development
-// */
-// export default class App extends Component {
-//   render() {
-//     return (
-//       <Trans />
-//     );
-//   }
-// }
