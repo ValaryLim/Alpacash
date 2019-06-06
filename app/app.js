@@ -4,10 +4,10 @@ import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';  
 import Icon from 'react-native-vector-icons/FontAwesome5';  
 
-import Transactions from './containers/Transactions';
-import Budget from './containers/Budget';
-import Statistics from './containers/Statistics';
-import Settings from './containers/Settings';
+import Transactions from './containers/Transactions.js';
+import Budget from './containers/Budget.js';
+import Statistics from './containers/Statistics.js';
+import Settings from './containers/Settings.js';
 
 const TabNavigator = createMaterialBottomTabNavigator(  
     {  
