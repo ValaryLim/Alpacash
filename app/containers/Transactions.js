@@ -1,19 +1,25 @@
 import React, { Component } from "react";
 import { 
     StyleSheet,
-    TouchableOpacity,
+    FlatList,
     View, 
     Text, 
-    ScrollView, 
+    Image,
     Button
 } from "react-native";
-import { Form, 
-         Item, 
-         Input 
+import { 
+    Container,
+    Content,
+    Header,
+    Form, 
+    Item, 
+    Input 
 } from 'native-base';
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import DatePicker from 'react-native-datepicker';
+import TransItem from './TransItem';
+
 
 /*
     other import statements or 
@@ -23,6 +29,7 @@ export default class Trans extends Component {
     constructor() {
       super();
       this.ref = firebase.firestore().collection('trans');
+      this.unsubscribe = null;
       this.state = {
         isModalVisible: false,
         isDateTimePickerVisible: false,
@@ -30,11 +37,42 @@ export default class Trans extends Component {
         amount: '',
         category: '',
         date: '',
+        loading: true,
+        trans: [],
       }
     }
+
+    componentDidMount() {
+      this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+    }
+  
+    componentWillUnmount() {
+      this.unsubscribe();
+    }
     
+    onCollectionUpdate = (querySnapshot) => {
+      const trans = [];
+      querySnapshot.forEach((doc) => {
+        const { title, amount, category, date } = doc.data();
+        
+        trans.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          amount,
+          category,
+          date
+        });
+      });
+    
+      this.setState({ 
+        trans,
+        loading: false,
+     });
+    }
+
     updateTransactionTitle(title) {
-      this.setState({title: title })
+      this.setState({title: title})
     }
 
     updateTransactionAmount(amount) {
@@ -74,16 +112,23 @@ export default class Trans extends Component {
     };
 
     render() {
+      if (this.state.loading) {
+        return null; // or render a loading icon
+      }
+
         return (
             <View>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Transactions</Text>
                 </View>
 
-                <ScrollView style={styles.scrollContainer}>
-                </ScrollView>
-                      
+                
+                <FlatList 
+                  data={this.state.trans}
+                  renderItem={({ item }) => <TransItem {...item}/>}
+                />
 
+                {/* Add transactions popup window */}
                 <View style = {styles.addButton}>
                   <Button title="Add transaction" onPress={() => this.toggleModal()} />
                   <Modal isVisible={this.state.isModalVisible}>
@@ -149,7 +194,8 @@ export default class Trans extends Component {
                   </Modal>
                 </View>
                 
-            </View>
+            
+          </View>
             
             
         );
@@ -164,7 +210,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: "#E91E63",
+    backgroundColor: "#7ACCC7",
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 10,
@@ -177,7 +223,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    marginBottom: 100,
+    marginTop: 50
   },
   footer: {
     position: "absolute",
@@ -197,9 +243,9 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     zIndex: 11,
-    top: 100,
+    top: 450,
     right: 40,
-    backgroundColor: "#e91e63",
+    backgroundColor: "#7ACCC7",
     width: 300,
     height: 40,
     borderRadius: 10,
