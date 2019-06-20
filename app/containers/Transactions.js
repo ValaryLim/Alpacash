@@ -18,7 +18,9 @@ import {
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import DatePicker from 'react-native-datepicker';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import TransItem from './TransItem';
+
 
 
 /*
@@ -122,15 +124,22 @@ export default class Trans extends Component {
                     <Text style={styles.headerText}>Transactions</Text>
                 </View>
 
-                
-                <FlatList 
+                <SwipeListView
+                  useFlatList
                   data={this.state.trans}
-                  renderItem={({ item }) => <TransItem {...item}/>}
+                  renderItem={({ item }, rowMap) => <TransItem {...item}/>}
+                  renderHiddenItem={ ({ item }, rowMap) => (
+                    <View style= {styles.rowBack}>
+                        <Text>Swipe right to edit</Text>
+                        <Button title="Delete" color="#FB3E44"/>
+                    </View>
+                    )}
+                  rightOpenValue={-80}
                 />
 
                 {/* Add transactions popup window */}
                 <View style = {styles.addButton}>
-                  <Button title="Add transaction" onPress={() => this.toggleModal()} />
+                  <Button title="Add transaction" color = "#7ACCC7" onPress={() => this.toggleModal()} />
                   <Modal isVisible={this.state.isModalVisible}>
                 
                       <View style = {styles.addButtonWindow}>
@@ -244,11 +253,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 11,
     top: 450,
-    right: 40,
+    right: 20,
     backgroundColor: "#7ACCC7",
-    width: 300,
-    height: 40,
-    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
     elevation: 8,
@@ -260,5 +266,17 @@ const styles = StyleSheet.create({
   addButtonWindow: {
     backgroundColor: "#00B386",
     borderRadius: 5,
+  },
+  rowBack: {
+		alignItems: 'center',
+		backgroundColor: '#DDD',
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  rowButton: {
+    backgroundColor: '#3f002d'
   }
 });
