@@ -18,7 +18,6 @@ import {
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import DatePicker from 'react-native-datepicker';
-import { SwipeListView } from 'react-native-swipe-list-view';
 import TransItem from './TransItem';
 
 
@@ -104,6 +103,16 @@ export default class Trans extends Component {
       });
     }
 
+    deleteTrans = () => {
+      const deleteItemId = "documentID";
+      firebase.firestore().collection("trans").doc(deleteItemId).delete().then(function() {
+           alert("deleted")
+       }).catch(function(error) {
+           alert("Error removing document: ", error);
+       });
+ 
+   }
+
     toggleModal() {
       this.setState({ isModalVisible: !this.state.isModalVisible });
     }
@@ -124,17 +133,9 @@ export default class Trans extends Component {
                     <Text style={styles.headerText}>Transactions</Text>
                 </View>
 
-                <SwipeListView
-                  useFlatList
+                <FlatList
                   data={this.state.trans}
-                  renderItem={({ item }, rowMap) => <TransItem {...item}/>}
-                  renderHiddenItem={ ({ item }, rowMap) => (
-                    <View style= {styles.rowBack}>
-                        <Text>Swipe right to edit</Text>
-                        <Button title="Delete" color="#FB3E44"/>
-                    </View>
-                    )}
-                  rightOpenValue={-80}
+                  renderItem={({ item }) => <TransItem {...item}/>}
                 />
 
                 {/* Add transactions popup window */}
