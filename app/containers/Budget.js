@@ -13,24 +13,43 @@ import {
 export default class Budget extends Component {
     constructor() {
         super();
-        this.moveLeftValueHolder = new Animated.ValueXY({x: 200, y: 200});
+        this.moveValueHolder = new Animated.ValueXY({x: 200, y: 200});
         this.flipValueHolder = new Animated.Value(0);
     }
 
     componentDidMount() {
-        this._moveLeftAnimation();
+        this.moveLeftAnimation();
     }
 
-    _moveLeftAnimation() {
-        Animated.timing(this.moveLeftValueHolder,
+    moveLeftAnimation() {
+        // Generate random x and y values to move left
+        var randomX = Math.floor(Math.random() * 100) + 1;
+        var randomY = Math.floor(Math.random() * 200) + 1;
+
+        // Move left
+        Animated.timing(this.moveValueHolder,
         {
-            toValue: {x: 1, y: 10},
+            toValue: {x: randomX, y: randomY},
             duration: 10000,
             easing: Easing.linear
-        }).start(()=>this._flipAnimation())
+        }).start(() => this.moveRightAnimation())
     }
 
-    _flipAnimation() {
+    moveRightAnimation() {
+        // Generate random x and y values to move right
+        var randomX = Math.floor(Math.random() * 100) + 100;
+        var randomY = Math.floor(Math.random() * 200) + 1;
+
+        // Move right
+        Animated.timing(this.moveValueHolder,
+        {
+            toValue: {x: randomX, y: randomY},
+            duration: 10000,
+            easing: Easing.linear
+        }).start(() => this.moveLeftAnimation())
+    }
+
+    flipAnimation() {
         if (this.flipValueHolder >= 90) {
             Animated.spring(
                 this.flipValueHolder,
@@ -65,14 +84,14 @@ export default class Budget extends Component {
                     style = {{ 
                         width: 50, 
                         height: 80,
-                        transform: [{ rotateY: this.setFlipInterpolate }]}}
+                        transform: this.moveValueHolder.getTranslateTransform()}}
                 />
                 <Animated.Image
                     source = {require('../assets/images/alpacas/alpaca2.png')}
                     style = {{ 
                         width: 50, 
                         height: 75,
-                        transform: this.moveLeftValueHolder.getTranslateTransform()
+                        transform: this.moveValueHolder.getTranslateTransform()
                         }}
                 />
             </View>
