@@ -13,14 +13,13 @@ import {
     Header,
     Form, 
     Item, 
-    Input 
+    Input, 
+    Picker
 } from 'native-base';
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import DatePicker from 'react-native-datepicker';
 import TransItem from './TransItem';
-
-
 
 /*
     other import statements or 
@@ -30,21 +29,31 @@ export default class Trans extends Component {
     constructor() {
       super();
       this.ref = firebase.firestore().collection('trans');
+      this.balance = firebase.firestore().collection('trans').doc('balance');
+      this.currBalance = null;
       this.unsubscribe = null;
       this.state = {
         isModalVisible: false,
         isDateTimePickerVisible: false,
+        balance: 0,
         title: '',
         amount: '',
         category: '',
         date: '',
+        type: 'income',
         loading: true,
-        trans: [],
+        trans: []
       }
     }
 
     componentDidMount() {
-      this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+      this.unsubscribe = this.ref.orderBy('date').onSnapshot(this.onCollectionUpdate)
+      this.balance.onSnapshot((doc) => {
+        const { total } = doc.data()
+        this.setState ({
+          balance: total
+        });
+      });
     }
   
     componentWillUnmount() {
@@ -54,7 +63,7 @@ export default class Trans extends Component {
     onCollectionUpdate = (querySnapshot) => {
       const trans = [];
       querySnapshot.forEach((doc) => {
-        const { title, amount, category, date } = doc.data();
+        const { title, amount, category, date, type } = doc.data();
         
         trans.push({
           key: doc.id,
@@ -62,7 +71,8 @@ export default class Trans extends Component {
           title,
           amount,
           category,
-          date
+          date,
+          type
         });
       });
     
@@ -70,6 +80,30 @@ export default class Trans extends Component {
         trans,
         loading: false,
      });
+    }
+    
+    updateBalance(amount, type) {
+      firebase.firestore().runTransaction(async transaction => {
+        const doc = await transaction.get(this.balance);
+        if (!doc.exists) {
+          transaction.set(this.balance, { total: 0 });
+          return 0;
+        }
+
+          const newBalance = type == "expenditure" 
+                ? doc.data().total - parseInt(amount)
+                :  type == "income"
+                      ? doc.data().total + parseInt(amount)
+                      : doc.data().total;
+
+        transaction.update(this.balance, {
+          total: newBalance,
+        });
+        return newBalance;
+      })
+      .catch(error => {
+        console.log('Transaction failed: ', error);
+      });
     }
 
     updateTransactionTitle(title) {
@@ -88,30 +122,29 @@ export default class Trans extends Component {
       this.setState({date: date})
     }
 
+    updateTransactionType(type) {
+      this.setState({type: type})
+    }
+
+    
+
     addTransaction() {
+      this.updateBalance(this.state.amount, this.state.type);
       this.ref.add({
         title: this.state.title,
         amount: this.state.amount,
         category: this.state.category,
-        date: this.state.date
+        date: this.state.date,
+        type: this.state.type,
       });
       this.setState({
         title: '',
         amount: '',
         category: '',
-        date: '15-08-1999',
+        date: '',
+        type: 'income'
       });
     }
-
-    deleteTrans = () => {
-      const deleteItemId = "documentID";
-      firebase.firestore().collection("trans").doc(deleteItemId).delete().then(function() {
-           alert("deleted")
-       }).catch(function(error) {
-           alert("Error removing document: ", error);
-       });
- 
-   }
 
     toggleModal() {
       this.setState({ isModalVisible: !this.state.isModalVisible });
@@ -131,6 +164,7 @@ export default class Trans extends Component {
             <View>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Transactions</Text>
+                    <Text> ${this.state.balance}</Text>
                 </View>
 
                 <FlatList
@@ -151,6 +185,16 @@ export default class Trans extends Component {
                               value = {this.state.title}
                               onChangeText={(text) => this.updateTransactionTitle(text)}
                             />
+                          </Item>
+                          <Item picker>
+                            <Picker
+                            mode="dropdown"
+                            placeholder="Income/Expenditure"
+                            selectedValue={this.state.type}
+                            onValueChange={(value) => this.updateTransactionType(value)}>
+                              <Picker.Item label="Income" value="income" />
+                              <Picker.Item label="Expenditure" value="expenditure" />
+                            </Picker>
                           </Item>
                           <Item>
                             <Input 
