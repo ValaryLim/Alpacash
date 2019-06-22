@@ -31,8 +31,9 @@ export default class Alpaca extends Component {
         var randomX = Math.floor(Math.random() * 100) + 1;
         var randomY = Math.floor(Math.random() * 200) + 1;
 
-        // Generate random duration
-        var randomDuration = Math.floor(Math.random()*1000) + 9000;
+        // Generate random duration and pause
+        var randomDuration = Math.floor(Math.random()*10000) + 8000;
+        var randomPause = Math.floor(Math.random() * 10000);
 
         // Move left
         Animated.timing(this.moveValueHolder,
@@ -40,7 +41,7 @@ export default class Alpaca extends Component {
             toValue: {x: randomX, y: randomY},
             duration: randomDuration,
             easing: Easing.linear
-        }).start(() => this.moveRightAnimation())
+        }).start(() => setTimeout(() => this.moveRightAnimation(), randomPause));
     }
 
     moveRightAnimation() {
@@ -48,8 +49,9 @@ export default class Alpaca extends Component {
         var randomX = Math.floor(Math.random() * 100) + 100;
         var randomY = Math.floor(Math.random() * 200) + 1;
 
-        // Generate random duration
-        var randomDuration = Math.floor(Math.random() * 5000) + 5000;
+        // Generate random duration and pause
+        var randomDuration = Math.floor(Math.random()*10000) + 8000;
+        var randomPause = Math.floor(Math.random() * 5000);
 
         // Move right
         Animated.timing(this.moveValueHolder,
@@ -57,7 +59,7 @@ export default class Alpaca extends Component {
             toValue: {x: randomX, y: randomY},
             duration: randomDuration,
             easing: Easing.linear
-        }).start(() => this.moveLeftAnimation())
+        }).start(() => setTimeout(() => this.moveLeftAnimation(), randomPause));
     }
 
     flipAnimation() {

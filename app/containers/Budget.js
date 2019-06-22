@@ -30,6 +30,7 @@ export default class Budget extends Component {
  */
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+      flex: 1,
+      backgroundColor: "#1EE3CF"
   },
 });
