@@ -20,11 +20,24 @@ export default class Alpaca extends Component {
         // Initialise value holders
         this.moveValueHolder = new Animated.ValueXY({x: initialX, y: initialY});
         this.flipValueHolder = new Animated.Value(0);
+
+        // Set state
+        this.state = {
+            faceLeft: true
+        };
     }
 
     componentDidMount() {
         this.moveLeftAnimation();
     }
+
+    flipImage() {
+        this.setState({
+           faceLeft: !this.state.faceLeft
+         });
+         this.state.faceLeft === true ? 
+            this.moveLeftAnimation() : this.moveRightAnimation();
+     }
 
     moveLeftAnimation() {
         // Generate random x and y values to move left
@@ -33,7 +46,7 @@ export default class Alpaca extends Component {
 
         // Generate random duration and pause
         var randomDuration = Math.floor(Math.random()*10000) + 8000;
-        var randomPause = Math.floor(Math.random() * 10000);
+        var randomPause = Math.floor(Math.random() * 20000);
 
         // Move left
         Animated.timing(this.moveValueHolder,
@@ -41,7 +54,7 @@ export default class Alpaca extends Component {
             toValue: {x: randomX, y: randomY},
             duration: randomDuration,
             easing: Easing.linear
-        }).start(() => setTimeout(() => this.moveRightAnimation(), randomPause));
+        }).start(() => setTimeout(() => this.flipImage(), randomPause));
     }
 
     moveRightAnimation() {
@@ -51,7 +64,7 @@ export default class Alpaca extends Component {
 
         // Generate random duration and pause
         var randomDuration = Math.floor(Math.random()*10000) + 8000;
-        var randomPause = Math.floor(Math.random() * 5000);
+        var randomPause = Math.floor(Math.random() * 20000);
 
         // Move right
         Animated.timing(this.moveValueHolder,
@@ -59,30 +72,10 @@ export default class Alpaca extends Component {
             toValue: {x: randomX, y: randomY},
             duration: randomDuration,
             easing: Easing.linear
-        }).start(() => setTimeout(() => this.moveLeftAnimation(), randomPause));
+        }).start(() => setTimeout(() => this.flipImage(), randomPause));
     }
 
-    flipAnimation() {
-        if (this.flipValueHolder >= 90) {
-            Animated.spring(
-                this.flipValueHolder,
-                {
-                    toValue: 0,
-                    tension: 10,
-                    friction: 8
-                }
-            ).start();
-        } else {
-            Animated.spring(
-                this.flipValueHolder,
-                {
-                    toValue: 180,
-                    tension: 10,
-                    friction: 8
-                }
-            ).start();
-        }
-    }
+
 
       
     render() {
@@ -95,7 +88,11 @@ export default class Alpaca extends Component {
         return(
             <View style = {styles.container} >
                 <Animated.Image
-                    source = {require('../assets/images/alpacas/alpaca2.png')}
+                    source = {
+                        this.state.faceLeft === true ?
+                            require('../assets/images/alpacas/alpaca6.png') :
+                            require('../assets/images/alpacas/alpaca6_flipped.png')
+                    }
                     style = {{ 
                         width: 50, 
                         height: 75,
