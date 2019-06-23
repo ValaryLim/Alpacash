@@ -22,7 +22,6 @@ import firebase from 'react-native-firebase';
 import DatePicker from 'react-native-datepicker';
 import CalendarStrip from 'react-native-calendar-strip';
 import moment from 'moment';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import TransItem from './TransItem';
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -179,6 +178,7 @@ export default class Trans extends Component {
 
         return (
             <View>
+            {/*
                 <View style={styles.header}>
                     <CalendarStrip
                       style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
@@ -190,8 +190,9 @@ export default class Trans extends Component {
                     />
                     <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
                 </View>
+                */}
 
-                <Agenda/>
+                
     
                 <FlatList
                   data={this.state.trans}
