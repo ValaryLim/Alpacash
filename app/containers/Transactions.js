@@ -47,7 +47,7 @@ export default class Transactions extends Component {
     }
 
     componentDidMount() {
-      this.unsubscribe = this.ref.orderBy('date', descending: true).onSnapshot(this.onCollectionUpdate)
+      this.unsubscribe = this.ref.orderBy('date').onSnapshot(this.onCollectionUpdate)
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
         this.setState ({
