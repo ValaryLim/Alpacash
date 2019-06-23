@@ -25,7 +25,7 @@ import TransItem from './TransItem';
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
-export default class Trans extends Component {
+export default class Transactions extends Component {
     constructor() {
       super();
       this.ref = firebase.firestore().collection('trans');
@@ -47,7 +47,7 @@ export default class Trans extends Component {
     }
 
     componentDidMount() {
-      this.unsubscribe = this.ref.orderBy('date', descending: true).onSnapshot(this.onCollectionUpdate)
+      this.unsubscribe = this.ref.orderBy('date').onSnapshot(this.onCollectionUpdate)
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
         this.setState ({
