@@ -29,7 +29,7 @@ import { ScrollView } from "react-native-gesture-handler";
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
-export default class Trans extends Component {
+export default class Transactions extends Component {
     constructor() {
       super();
       this.ref = firebase.firestore().collection('trans');
@@ -178,7 +178,6 @@ export default class Trans extends Component {
 
         return (
             <View>
-            {/*
                 <View style={styles.header}>
                     <CalendarStrip
                       style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
@@ -190,7 +189,7 @@ export default class Trans extends Component {
                     />
                     <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
                 </View>
-                */}
+            
 
                 
     
