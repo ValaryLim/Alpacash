@@ -1,13 +1,13 @@
 import React from 'react';  
-import {StyleSheet, Text, View,Button} from 'react-native';  
+import {StyleSheet, Text, View, Button} from 'react-native';  
 import { createBottomTabNavigator, createAppContainer} from 'react-navigation';  
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';  
 import Icon from 'react-native-vector-icons/FontAwesome5';  
 
-import Transactions from './containers/Transactions';
-import Budget from './containers/Budget';
-import Statistics from './containers/Statistics';
-import Settings from './containers/Settings';
+import Transactions from './containers/Transactions.js';
+import Budget from './containers/Budget.js';
+import Statistics from './containers/Statistics.js';
+import Settings from './containers/Settings.js';
 
 const TabNavigator = createMaterialBottomTabNavigator(  
     {  
@@ -68,21 +68,3 @@ const TabNavigator = createMaterialBottomTabNavigator(
 );  
   
 export default createAppContainer(TabNavigator);
-
-// import React, { Component } from "react";
-
-
-// // for navigation
-// import 
-
-// /*
-//     other import statements or 
-//     JS variables like const here - can be dummy datas to use for development
-// */
-// export default class App extends Component {
-//   render() {
-//     return (
-//       <Trans />
-//     );
-//   }
-// }
