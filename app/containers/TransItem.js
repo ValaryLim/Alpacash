@@ -123,5 +123,5 @@ const expendStyle = StyleSheet.create({
     backTextWhite: {
 		color: '#FFF'
 	},
-})
+});
 
