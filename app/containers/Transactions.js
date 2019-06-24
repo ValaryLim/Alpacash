@@ -231,7 +231,7 @@ export default class Transactions extends Component {
                             />
                           </Item>
                           <Item picker>
-                            <Picker
+                           <Picker
                               mode="dropdown"
                               placeholder="Category"
                               selectedValue={this.state.category}
