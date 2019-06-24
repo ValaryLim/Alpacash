@@ -5,7 +5,8 @@ import {
     View, 
     Text, 
     Image,
-    Button
+    Button,
+    TouchableHighlight
 } from "react-native";
 import { 
     Container,
@@ -19,12 +20,16 @@ import {
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import DatePicker from 'react-native-datepicker';
+import CalendarStrip from 'react-native-calendar-strip';
+import moment from 'moment';
 import TransItem from './TransItem';
+import { ScrollView } from "react-native-gesture-handler";
 
 /*
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
+
 export default class Transactions extends Component {
     constructor() {
       super();
@@ -40,14 +45,16 @@ export default class Transactions extends Component {
         amount: '',
         category: '',
         date: '',
+        month:'',
         type: 'income',
         loading: true,
-        trans: []
+        trans: [],
+        headerDate: moment()
       }
     }
 
     componentDidMount() {
-      this.unsubscribe = this.ref.orderBy('date').onSnapshot(this.onCollectionUpdate)
+      this.unsubscribe = this.ref.where('date', '==', moment().format("DD-MM-YYYY")).onSnapshot(this.onCollectionUpdate);
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
         this.setState ({
@@ -60,6 +67,10 @@ export default class Transactions extends Component {
       this.unsubscribe();
     }
     
+    onSelectingDate(date) {
+      this.unsubscribe = this.ref.where('date', '==', date).onSnapshot(this.onCollectionUpdate);
+    }
+
     onCollectionUpdate = (querySnapshot) => {
       const trans = [];
       querySnapshot.forEach((doc) => {
@@ -119,7 +130,11 @@ export default class Transactions extends Component {
     }
 
     updateTransactionDate(date) {
-      this.setState({date: date})
+      splitDate = String(date).split('-');
+      this.setState({
+        date: date,
+        month: splitDate[1],
+        headerDate: date})
     }
 
     updateTransactionType(type) {
@@ -136,13 +151,15 @@ export default class Transactions extends Component {
         category: this.state.category,
         date: this.state.date,
         type: this.state.type,
+        month: this.state.month
       });
       this.setState({
         title: '',
         amount: '',
         category: '',
         date: '',
-        type: 'income'
+        type: 'income',
+        month:''
       });
     }
 
@@ -162,10 +179,19 @@ export default class Transactions extends Component {
 
         return (
             <View>
+            {/*
                 <View style={styles.header}>
-                    <Text style={styles.headerText}>Transactions</Text>
-                    <Text> ${this.state.balance}</Text>
+                    <CalendarStrip
+                      style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
+                      calendarHeaderStyle={{color: 'white', fontSize: 30, paddingBottom: 15, textTransform: "uppercase"}}
+                      dateNumberStyle={{color: 'white'}}
+                      dateNameStyle={{color: 'white'}}
+                      selectedDate={this.state.headerDate}
+                      onDateSelected = {(date) => this.onSelectingDate(date.format("DD-MM-YYYY"))}
+                    />
+                    <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
                 </View>
+                */}
 
                 <FlatList
                   data={this.state.trans}
@@ -234,16 +260,16 @@ export default class Transactions extends Component {
                           }}
                           onDateChange={(date) => {this.updateTransactionDate(date)}}
                         />
+                        <Button 
+                          title="Confirm" 
+                          disabled={!this.state.title.length ||
+                                    !this.state.amount.length ||
+                                    !this.state.category.length ||
+                                    !this.state.date.length}
+                          onPress={this.confirmButton}/>
+                       <Button title="Cancel" onPress={() => this.toggleModal()} />
                         </View>
-                      
-                    <Button 
-                      title="Confirm" 
-                      disabled={!this.state.title.length ||
-                                !this.state.amount.length ||
-                                !this.state.category.length ||
-                                !this.state.date.length}
-                      onPress={this.confirmButton}/>
-                    <Button title="Cancel" onPress={() => this.toggleModal()} />
+                    
                       
                   </Modal>
                 </View>
@@ -272,11 +298,10 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "white",
-    fontSize: 18,
-    padding: 26,
+    fontSize: 15,
+    padding: 15,
   },
   scrollContainer: {
-    flex: 1,
     marginTop: 50
   },
   footer: {
@@ -309,8 +334,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   addButtonWindow: {
-    backgroundColor: "#00B386",
-    borderRadius: 5,
+    backgroundColor: "#F66A73",
+    borderRadius: 10,
+    width: 300,
+    position: "relative",
+    marginLeft: 25,
   },
   rowBack: {
 		alignItems: 'center',
@@ -323,5 +351,5 @@ const styles = StyleSheet.create({
   },
   rowButton: {
     backgroundColor: '#3f002d'
-  }
+  },
 });
