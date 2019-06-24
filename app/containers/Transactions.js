@@ -29,7 +29,8 @@ import { ScrollView } from "react-native-gesture-handler";
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
-export default class Trans extends Component {
+
+export default class Transactions extends Component {
     constructor() {
       super();
       this.ref = firebase.firestore().collection('trans');
@@ -192,8 +193,6 @@ export default class Trans extends Component {
                 </View>
                 */}
 
-                
-    
                 <FlatList
                   data={this.state.trans}
                   renderItem={({ item }) => <TransItem {...item}/>}
@@ -270,7 +269,6 @@ export default class Trans extends Component {
                           onPress={this.confirmButton}/>
                        <Button title="Cancel" onPress={() => this.toggleModal()} />
                         </View>
-                      
                     
                       
                   </Modal>

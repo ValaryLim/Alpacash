@@ -3,19 +3,23 @@ import {
     StyleSheet,
     View, 
     Text, 
-    TextInput, 
-    ScrollView, 
-    TouchableOpacity,
+    TouchableWithoutFeedback,
+    Animated,
+    Image,
+    Easing
 } from "react-native";
-/*
-    other import statements or 
-    JS variables like const here - can be dummy data to use for development
-*/
+
+import Alpaca from "../components/Alpaca";
+
 export default class Budget extends Component {
     render() {
-        return(
-            <View>
-                <Text>Budget</Text>
+        return (
+            <View style = {styles.container} >
+                <Alpaca/>
+                <Alpaca/>
+                <Alpaca/>
+                <Alpaca/>
+                <Alpaca/>
             </View>
         );
     }
@@ -26,6 +30,7 @@ export default class Budget extends Component {
  */
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+      flex: 1,
+      backgroundColor: "#1EE3CF"
   },
 });
