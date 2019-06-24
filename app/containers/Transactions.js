@@ -230,12 +230,18 @@ export default class Transactions extends Component {
                               onChangeText={(text) => this.updateTransactionAmount(text)}
                             />
                           </Item>
-                          <Item>
-                            <Input 
-                              placeholder = "Category"
-                              value = {this.state.category}
-                              onChangeText={(text) => this.updateTransactionCategory(text)}
-                            />
+                          <Item picker>
+                            <Picker
+                              mode="dropdown"
+                              placeholder="Category"
+                              selectedValue={this.state.category}
+                              onValueChange={(value) => this.updateTransactionCategory(value)}>
+                                <Picker.Item label="Food" value="food" />
+                                <Picker.Item label="Shopping" value="shopping"/>
+                                <Picker.Item label="Entertainment" value ="entertainment"/>
+                                <Picker.Item label="Transport" value ="transport"/>
+                                <Picker.Item label="Utilities" value ="utilities"/>
+                              </Picker>
                           </Item>
                         </Form>
                         <DatePicker
