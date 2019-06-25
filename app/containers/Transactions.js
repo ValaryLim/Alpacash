@@ -179,7 +179,6 @@ export default class Transactions extends Component {
 
         return (
             <View>
-            {/*
                 <View style={styles.header}>
                     <CalendarStrip
                       style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
@@ -191,8 +190,7 @@ export default class Transactions extends Component {
                     />
                     <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
                 </View>
-                */}
-
+                
                 <FlatList
                   data={this.state.trans}
                   renderItem={({ item }) => <TransItem {...item}/>}
@@ -230,12 +228,18 @@ export default class Transactions extends Component {
                               onChangeText={(text) => this.updateTransactionAmount(text)}
                             />
                           </Item>
-                          <Item>
-                            <Input 
-                              placeholder = "Category"
-                              value = {this.state.category}
-                              onChangeText={(text) => this.updateTransactionCategory(text)}
-                            />
+                          <Item picker>
+                           <Picker
+                              mode="dropdown"
+                              placeholder="Category"
+                              selectedValue={this.state.category}
+                              onValueChange={(value) => this.updateTransactionCategory(value)}>
+                                <Picker.Item label="Food" value="food" />
+                                <Picker.Item label="Shopping" value="shopping"/>
+                                <Picker.Item label="Entertainment" value ="entertainment"/>
+                                <Picker.Item label="Transport" value ="transport"/>
+                                <Picker.Item label="Utilities" value ="utilities"/>
+                              </Picker>
                           </Item>
                         </Form>
                         <DatePicker
@@ -269,12 +273,10 @@ export default class Transactions extends Component {
                           onPress={this.confirmButton}/>
                        <Button title="Cancel" onPress={() => this.toggleModal()} />
                         </View>
-                    
-                      
+ 
                   </Modal>
                 </View>
-                
-            
+                  
           </View>
             
             
