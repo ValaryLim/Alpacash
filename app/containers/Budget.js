@@ -24,7 +24,6 @@ class BudgetScreen extends React.Component {
     }
     render() {
         return (
-
             <View style = {styles.container} >
                 <Alpaca/>
                 <Alpaca/>
@@ -70,3 +69,4 @@ const styles = StyleSheet.create({
         backgroundColor: "#1EE3CF"
     },
   });
+

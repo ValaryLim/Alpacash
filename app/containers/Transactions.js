@@ -29,6 +29,7 @@ import { ScrollView } from "react-native-gesture-handler";
     other import statements or 
     JS variables like const here - can be dummy data to use for development
 */
+
 export default class Transactions extends Component {
     constructor() {
       super();
@@ -189,10 +190,7 @@ export default class Transactions extends Component {
                     />
                     <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
                 </View>
-            
-
                 
-    
                 <FlatList
                   data={this.state.trans}
                   renderItem={({ item }) => <TransItem {...item}/>}
@@ -275,13 +273,10 @@ export default class Transactions extends Component {
                           onPress={this.confirmButton}/>
                        <Button title="Cancel" onPress={() => this.toggleModal()} />
                         </View>
-                      
-                    
-                      
+ 
                   </Modal>
                 </View>
-                
-            
+                  
           </View>
             
             
