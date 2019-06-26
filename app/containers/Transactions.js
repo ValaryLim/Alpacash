@@ -6,7 +6,7 @@ import {
     Text, 
     Image,
     Button,
-    TouchableHighlight
+    Dimensions
 } from "react-native";
 import { 
     Container,
@@ -15,7 +15,7 @@ import {
     Form, 
     Item, 
     Input, 
-    Picker
+    Picker as OptionPicker
 } from 'native-base';
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
@@ -23,7 +23,9 @@ import DatePicker from 'react-native-datepicker';
 import CalendarStrip from 'react-native-calendar-strip';
 import moment from 'moment';
 import TransItem from './TransItem';
-import { ScrollView } from "react-native-gesture-handler";
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+
+
 
 /*
     other import statements or 
@@ -42,7 +44,7 @@ export default class Transactions extends Component {
         balance: 0,
         title: '',
         amount: '',
-        category: '',
+        category: 'food',
         date: '',
         month:'',
         type: 'income',
@@ -67,7 +69,7 @@ export default class Transactions extends Component {
     }
     
     onSelectingDate(date) {
-      this.unsubscribe = this.ref.where('date', '==', date).onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe = this.ref.where('date', '>=', date).onSnapshot(this.onCollectionUpdate);
     }
 
     onCollectionUpdate = (querySnapshot) => {
@@ -83,6 +85,7 @@ export default class Transactions extends Component {
           category,
           date,
           type
+          
         });
       });
     
@@ -175,32 +178,28 @@ export default class Transactions extends Component {
       if (this.state.loading) {
         return null; // or render a loading icon
       }
-
         return (
-            <View>
-                <View style={styles.header}>
+            <View style = {styles.container}>
+                  <View style = {styles.header}>
                     <CalendarStrip
                       style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
                       calendarHeaderStyle={{color: 'white', fontSize: 30, paddingBottom: 15, textTransform: "uppercase"}}
                       dateNumberStyle={{color: 'white'}}
                       dateNameStyle={{color: 'white'}}
                       selectedDate={this.state.headerDate}
-                      onDateSelected = {(date) => this.onSelectingDate(date.format("DD-MM-YYYY"))}
+                      onDateSelected = {(date) => this.onSelectingDate(date.format("YYYY-MM-DD"))}
                     />
                     <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
-                </View>
-            
-
-                
-    
+                  </View>
                 <FlatList
                   data={this.state.trans}
                   renderItem={({ item }) => <TransItem {...item}/>}
                 />
-
+  
                 {/* Add transactions popup window */}
+                
                 <View style = {styles.addButton}>
-                  <Button title="Add transaction" color = "#7ACCC7" onPress={() => this.toggleModal()} />
+                  <Button title="Add transaction" color = "#F66A73" onPress={() => this.toggleModal()} />
                   <Modal isVisible={this.state.isModalVisible}>
                 
                       <View style = {styles.addButtonWindow}>
@@ -213,14 +212,14 @@ export default class Transactions extends Component {
                             />
                           </Item>
                           <Item picker>
-                            <Picker
+                            <OptionPicker
                             mode="dropdown"
                             placeholder="Income/Expenditure"
                             selectedValue={this.state.type}
                             onValueChange={(value) => this.updateTransactionType(value)}>
-                              <Picker.Item label="Income" value="income" />
-                              <Picker.Item label="Expenditure" value="expenditure" />
-                            </Picker>
+                              <OptionPicker.Item label="Income" value="income" />
+                              <OptionPicker.Item label="Expenditure" value="expenditure" />
+                            </OptionPicker>
                           </Item>
                           <Item>
                             <Input 
@@ -231,17 +230,17 @@ export default class Transactions extends Component {
                             />
                           </Item>
                           <Item picker>
-                           <Picker
+                           <OptionPicker
                               mode="dropdown"
                               placeholder="Category"
                               selectedValue={this.state.category}
                               onValueChange={(value) => this.updateTransactionCategory(value)}>
-                                <Picker.Item label="Food" value="food" />
-                                <Picker.Item label="Shopping" value="shopping"/>
-                                <Picker.Item label="Entertainment" value ="entertainment"/>
-                                <Picker.Item label="Transport" value ="transport"/>
-                                <Picker.Item label="Utilities" value ="utilities"/>
-                              </Picker>
+                                <OptionPicker.Item label="Food" value="Food" />
+                                <OptionPicker.Item label="Shopping" value="Shopping"/>
+                                <OptionPicker.Item label="Entertainment" value ="Entertainment"/>
+                                <OptionPicker.Item label="Transport" value ="Transport"/>
+                                <OptionPicker.Item label="Utilities" value ="Utilities"/>
+                              </OptionPicker>
                           </Item>
                         </Form>
                         <DatePicker
@@ -249,7 +248,7 @@ export default class Transactions extends Component {
                           date={this.state.date} //initial date from state
                           mode="date" //The enum of date, datetime and time
                           placeholder="Select Date"
-                          format="DD-MM-YYYY"
+                          format="YYYY-MM-DD"
                           confirmBtnText="Confirm"
                           cancelBtnText="Cancel"
                           customStyles={{
@@ -270,18 +269,14 @@ export default class Transactions extends Component {
                           title="Confirm" 
                           disabled={!this.state.title.length ||
                                     !this.state.amount.length ||
-                                    !this.state.category.length ||
                                     !this.state.date.length}
                           onPress={this.confirmButton}/>
                        <Button title="Cancel" onPress={() => this.toggleModal()} />
-                        </View>
-                      
-                    
-                      
+                        </View>      
                   </Modal>
                 </View>
                 
-            
+               
           </View>
             
             
@@ -295,6 +290,7 @@ export default class Transactions extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+   
   },
   header: {
     backgroundColor: "#7ACCC7",
@@ -331,7 +327,7 @@ const styles = StyleSheet.create({
     zIndex: 11,
     top: 450,
     right: 20,
-    backgroundColor: "#7ACCC7",
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
     elevation: 8,
