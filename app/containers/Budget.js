@@ -34,12 +34,11 @@ class BudgetScreen extends React.Component {
                 <Alpaca/>
                 <Alpaca/>
                 <Alpaca/>
-                <Alpaca/>
                 <Icon 
                     name='add-circle-outline'
                     type='material'
                     color='#fff'
-                    size={40}
+                    size={30}
                     onPress={() => this.props.navigation.navigate('BudgetSetting')} />
             </View>
         );
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
     container: {
         height: "100%",
         width: "100%",
-        backgroundColor: "#1EE3CF"
+        backgroundColor: "#1EE3CF",
     },
   });
 

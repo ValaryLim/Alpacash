@@ -30,12 +30,21 @@ export default class Alpaca extends Component {
 
         // Set state
         this.state = {
-            faceLeft: true
+            faceLeft: this.generateRandomInitialDirection()
         };
     }
 
+    generateRandomInitialDirection() {
+        var direction = Math.random();
+        return (direction < 0.5);
+    }
+
     componentDidMount() {
-        this.moveLeftAnimation();
+        if (this.state.faceLeft) {
+            this.moveLeftAnimation();
+        } else {
+            this.moveRightAnimation();
+        }
     }
 
     flipImage() {
