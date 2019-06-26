@@ -7,15 +7,22 @@ import {
     TouchableWithoutFeedback,
     Animated,
     Image,
-    Easing
+    Easing,
+    Dimensions,
+    PixelRatio
 } from "react-native";
 
 export default class Alpaca extends Component {
     constructor() {
         super();
+        // Get dimensions of screen excluding bottom navigation
+        this.screenWidth = Dimensions.get("window").width;
+        this.screenHeight = Dimensions.get("window").height;
+        this.halfScreenWidth = this.screenWidth / 2;
+
         // Generate random initial x and y values
-        var initialX = Math.floor(Math.random() * 100) + 100;
-        var initialY = Math.floor(Math.random() * 200) + 1;
+        var initialX = Math.floor(Math.random() * this.halfScreenWidth) + this.halfScreenWidth - 50;
+        var initialY = Math.floor(Math.random() * this.screenHeight/12);
 
         // Initialise value holders
         this.moveValueHolder = new Animated.ValueXY({x: initialX, y: initialY});
@@ -39,10 +46,10 @@ export default class Alpaca extends Component {
             this.moveLeftAnimation() : this.moveRightAnimation();
      }
 
-    moveLeftAnimation() {
+    moveLeftAnimation = () => {
         // Generate random x and y values to move left
-        var randomX = Math.floor(Math.random() * 100) + 1;
-        var randomY = Math.floor(Math.random() * 200) + 1;
+        var randomX = Math.floor(Math.random() * this.halfScreenWidth);
+        var randomY = Math.floor(Math.random() * this.screenHeight / 12);
 
         // Generate random duration and pause
         var randomDuration = Math.floor(Math.random()*10000) + 8000;
@@ -57,10 +64,10 @@ export default class Alpaca extends Component {
         }).start(() => setTimeout(() => this.flipImage(), randomPause));
     }
 
-    moveRightAnimation() {
+    moveRightAnimation = () => {
         // Generate random x and y values to move right
-        var randomX = Math.floor(Math.random() * 100) + 100;
-        var randomY = Math.floor(Math.random() * 200) + 1;
+        var randomX = Math.floor(Math.random() * this.halfScreenWidth) + this.halfScreenWidth - 50;
+        var randomY = Math.floor(Math.random() * this.screenHeight / 12);
 
         // Generate random duration and pause
         var randomDuration = Math.floor(Math.random()*10000) + 8000;
@@ -79,23 +86,19 @@ export default class Alpaca extends Component {
 
       
     render() {
-        // Set flip interpolate
-        this.setFlipInterpolate = this.flipValueHolder.interpolate({
-            inputRange: [0, 180],
-            outputRange: ['180deg', '360deg']
-        })
-
         return(
-            <View style = {styles.container} >
+            <View>
                 <Animated.Image
+                    resizeMode = "contain"
                     source = {
+                        // if left is true, face left, else face right
                         this.state.faceLeft === true ?
                             require('../assets/images/alpacas/alpaca6.png') :
                             require('../assets/images/alpacas/alpaca6_flipped.png')
                     }
                     style = {{ 
-                        width: 50, 
-                        height: 75,
+                        width: 42, 
+                        height: 63,
                         transform: this.moveValueHolder.getTranslateTransform()
                         }}
                 />
@@ -109,7 +112,7 @@ export default class Alpaca extends Component {
  */
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
+        
     },
   });
   

@@ -6,21 +6,26 @@ import {
     TouchableWithoutFeedback,
     Animated,
     Image,
-    Easing
+    Easing,
+    Dimensions
 } from "react-native";
 
 import { Icon } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
+import Draggable from 'react-native-draggable';
 
 
 import Alpaca from "../components/Alpaca";
 import BudgetSetting from './BudgetSetting.js';
 
+
 class BudgetScreen extends React.Component {
     constructor() {
         super();
         this.ref = firebase.firestore().collection('budget');
+        this.screenWidth = Dimensions.get("window").width;
+        this.screenHeight = Dimensions.get("window").height;
     }
     render() {
         return (
@@ -65,7 +70,8 @@ export default class Budget extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: "100%",
+        width: "100%",
         backgroundColor: "#1EE3CF"
     },
   });
