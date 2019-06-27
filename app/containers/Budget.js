@@ -7,7 +7,8 @@ import {
     Animated,
     Image,
     Easing,
-    Dimensions
+    Dimensions, 
+    PanResponder
 } from "react-native";
 
 import { Icon } from 'react-native-elements'
