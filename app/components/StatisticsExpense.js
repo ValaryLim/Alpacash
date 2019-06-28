@@ -58,23 +58,7 @@ export default class StatisticsExpense extends React.Component {
     }
 
     getCategoryData() {
-        // Get amount spent per category
-        const categoryAmount = {};
-        
-        // For each trans recorded, add to category amount
-        for (let i = 0; i < this.state.data.length; i++) {
-            // access category and amount
-            var trans_cat = this.state.data[i]["category"];
-            var trans_amount = this.state.data[i]["amount"];
-
-            // if category not in categoryAmount ==> then put new category
-            if (!(trans_cat in categoryAmount)) {
-                categoryAmount[trans_cat] = parseFloat(trans_amount);
-            } else {
-                var current_cat_amount = categoryAmount[trans_cat];
-                categoryAmount[trans_cat] = current_cat_amount + parseFloat(trans_amount);
-            }
-        }
+        const categoryAmount = this.getAmountData();
 
         // Get category data
         const categoryData = [];
@@ -86,6 +70,27 @@ export default class StatisticsExpense extends React.Component {
             categoryData.push(cat);
         }
         return (categoryData);
+    }
+
+    getAmountData() {
+        const categoryAmount = {};
+        
+        // For each trans recorded, add to category amount
+        for (let i = 0; i < this.state.data.length; i++) {
+            // Get category and amount
+            var trans_cat = this.state.data[i]["category"];
+            var trans_amount = this.state.data[i]["amount"];
+
+            // If category not in categoryAmount ==> create new category, else, add to existing category
+            if (!(trans_cat in categoryAmount)) {
+                categoryAmount[trans_cat] = parseFloat(trans_amount);
+            } else {
+                var current_cat_amount = categoryAmount[trans_cat];
+                categoryAmount[trans_cat] = current_cat_amount + parseFloat(trans_amount);
+            }
+        }
+
+        return (categoryAmount);
     }
 
 
