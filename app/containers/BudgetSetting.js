@@ -4,6 +4,7 @@ import {
     View, 
     Text, 
     TextInput, 
+    ScrollView
 } from "react-native";
 import { CheckBox } from 'react-native-elements';
 import firebase from 'react-native-firebase';
@@ -15,11 +16,13 @@ import firebase from 'react-native-firebase';
 export default class BudgetSetting extends Component {
     constructor() {
         super();
-        this.ref = firebase.firestore().collection('categories');
+        this.ref = firebase.firestore().collection('expense_categories');
+        this.checkbox = null;
         this.unsubscribe = null;
         this.state = {
             categories: [],
-            loading: true
+            loading: true,
+            
         };
     }
 
@@ -34,24 +37,59 @@ export default class BudgetSetting extends Component {
     onCollectionUpdate = (querySnapshot) => {
         const categories = [];
         querySnapshot.forEach((doc) => {
-          const { title, checked } = doc.data();
+          const { id, title, checked, color } = doc.data();
           
           categories.push({
             key: doc.id,
             doc, // DocumentSnapshot
+            id,
             title,
-            checked
+            checked,
+            color
           });
         });
         this.setState({ 
           categories,
-          loading: false,
+          loading: false
        });
     }
-    
+
+    toggleCheckbox(id) {
+      this.checkbox = this.ref.doc(id);
+        firebase.firestore().runTransaction(async transaction => {
+          const doc = await transaction.get(this.checkbox);
+          if (!doc.exists) {
+            transaction.set(this.checkbox, {checked: false});
+            return false;
+          }
+        
+          const newState = !(doc.data().checked);
+  
+          transaction.update(this.checkbox, {
+            checked: newState
+          });
+          return newState;
+        })
+        .catch(error => {
+          console.log('Transaction failed: ', error);
+        });
+      }
+
+      toggleCheckbox2(id) {
+        firebase.firestore().collection("expense_categories").where("id", "==", id)
+        .get()
+        .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                console.log(doc.id, " => ", doc.data());
+                doc.update(doc, {checked: !doc.data().checked});
+            });
+         })
+      }
+
     render() {
         return (
             <View style = {styles.container}>
+              <View style = {styles.header}>
                 <TextInput style = {styles.budgetTitle}
                     placeholder='Enter budget title'
                     placeholderTextColor = 'white'
@@ -64,6 +102,8 @@ export default class BudgetSetting extends Component {
                     keyboardType ='numeric'
                     underlineColorAndroid = 'transparent'
                 />
+                </View>
+                <ScrollView style = {styles.categoryBox}>
                 {this.state.categories.map((cat) => {    
                     return (            
                     <CheckBox
@@ -73,10 +113,14 @@ export default class BudgetSetting extends Component {
                             checkedIcon='dot-circle-o'
                             uncheckedIcon='circle-o'
                             checked={cat.checked}
+                            onPress = {() => this.toggleCheckbox(cat.doc.id)}
+                            
                         
                     />
                     )
                 })}
+                </ScrollView>
+              
             </View>
         );
     }
@@ -90,12 +134,20 @@ export default class BudgetSetting extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F56B74',
+  },
+  header: {
+    backgroundColor: "#F66A73",
+    height: 150,
+    alignItems: 'center'
   },
   budgetTitle: {
+    fontSize: 15,
+  },
+  budgetAmount: {
+    fontSize: 30
   },
   categoryBox: {
-      flex: 1,
-      height: 100
+      height: 30,
+      backgroundColor: '#fff'
   }
 });
