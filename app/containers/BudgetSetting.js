@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { 
     StyleSheet,
     View, 
-    Text, 
     TextInput, 
     ScrollView
 } from "react-native";
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Text} from 'react-native-elements';
+import {Button} from 'native-base';
 import firebase from 'react-native-firebase';
 
 /*
@@ -17,6 +17,7 @@ export default class BudgetSetting extends Component {
     constructor() {
         super();
         this.ref = firebase.firestore().collection('expense_categories');
+        this.budget = firebase.firestore().collection('budget');
         this.checkbox = null;
         this.unsubscribe = null;
         this.state = {
@@ -113,20 +114,26 @@ export default class BudgetSetting extends Component {
                             checkedIcon='dot-circle-o'
                             uncheckedIcon='circle-o'
                             checked={cat.checked}
-                            onPress = {() => this.toggleCheckbox(cat.doc.id)}
-                            
-                        
+                            onPress = {() => this.toggleCheckbox(cat.doc.id)}  
                     />
                     )
                 })}
                 </ScrollView>
-              
-            </View>
+                <View style = {styles.footer}>
+                  <Button rounded success 
+                    style = {styles.confirmButton}> 
+                    <Text> Confirm</Text>
+                  </Button>
+                  <Button rounded danger
+                    style = {styles.confirmButton}>
+                      <Text> Delete </Text>
+                  </Button>
+                </View>
+              </View>
+            
         );
     }
-}
-
-
+  }
 
 /**
  * StyleSheet
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#F66A73",
-    height: 150,
+    height: '30%',
     alignItems: 'center'
   },
   budgetTitle: {
@@ -147,7 +154,18 @@ const styles = StyleSheet.create({
     fontSize: 30
   },
   categoryBox: {
-      height: 30,
       backgroundColor: '#fff'
+  },
+  footer: {
+    backgroundColor: "#fff",
+    height: '20%',
+    justifyContent: 'space-between',
+    flexDirection: 'row'
+  },
+  confirmButton: {
+    width: 100,
+    justifyContent: 'center',
+    marginLeft: '10%',
+    marginRight: '10%'
   }
 });
