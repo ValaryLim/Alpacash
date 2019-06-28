@@ -19,17 +19,21 @@ export default class StatisticsIncome extends React.Component {
         this.unsubscribe = null;
 
         this.state = {
-            loading: true,
-            data: []
+            loading_data: true,
+            data: [],
+            loading_colors: true,
+            colors: []
         }
     }
 
     componentDidMount() {
-        this.unsubscribe = this.trans.onSnapshot(this.onCollectionUpdate)
+        this.unsubscribe_data = this.trans.onSnapshot(this.onCollectionUpdate);
+        this.unsubscribe_colors = this.income_categories.onSnapshot(this.onColorUpdate);
     }
 
     componentWillUnmount() {
-        this.unsubscribe();
+        this.unsubscribe_data();
+        this.unsubscribe_colors();
     }
 
     onCollectionUpdate = (querySnapshot) => {
@@ -49,13 +53,34 @@ export default class StatisticsIncome extends React.Component {
         });
       
         this.setState({ 
-          data,
-          loading: false,
+            data,
+            loading_data: false,
+        });
+    }
+
+    onColorUpdate = (querySnapshot) => {
+        const colors = [];
+
+        querySnapshot.forEach((doc) => {
+          const { checked, color, id, title } = doc.data();
+          
+          colors.push({
+              key: doc.id,
+              doc, // DocumentSnapshot
+              title,
+              color
+          });
+        });
+      
+        this.setState({ 
+          colors,
+          loading_colors: false,
        });
     }
 
     getCategoryData() {
         const categoryAmount = this.getAmountData();
+        const categoryColors = this.getColorData();
 
         // Get category data
         const categoryData = [];
@@ -67,6 +92,22 @@ export default class StatisticsIncome extends React.Component {
             categoryData.push(cat);
         }
         return (categoryData);
+    }
+
+    getColorData() {
+        const categoryColors = {};
+
+        // For each category, add color to categoryColors dic
+        for (let i = 0; i < this.state.colors.length; i++) {
+            // Get category and fill
+            var cat_name = this.state.colors[i]["title"];
+            var cat_fill = this.state.colors[i]["color"];
+
+            // Add to dictionary
+            categoryColors[cat_name] = cat_fill;
+        }
+
+        return (categoryColors);
     }
 
     getAmountData() {
