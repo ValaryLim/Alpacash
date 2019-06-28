@@ -69,9 +69,10 @@ export default class StatisticsExpense extends React.Component {
 
             // if category not in categoryAmount ==> then put new category
             if (!(trans_cat in categoryAmount)) {
-                categoryAmount[trans_cat] = trans_amount;
+                categoryAmount[trans_cat] = parseFloat(trans_amount);
             } else {
-                categoryAmount[trans_cat] = categoryAmount[trans_cat] + trans_amount;
+                var current_cat_amount = categoryAmount[trans_cat];
+                categoryAmount[trans_cat] = current_cat_amount + parseFloat(trans_amount);
             }
         }
 
@@ -93,16 +94,17 @@ export default class StatisticsExpense extends React.Component {
             return null; // or render a loading icon
         }
 
+        var categoryData = this.getCategoryData();
+
         return (
             <Svg width={400} height={400} viewBox="-70 -10 400 400" style={{ width: "auto", height: "auto" }}>
                 <VictoryPie
                     name = "pie"
                     standalone = { false }
-                    data= { this.getCategoryData() }
+                    data= { categoryData }
                     x = "category"
                     y = "amount"
-                    // labels = {(datum) => `${datum.category}: \n\$ ${datum.amount.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`}
-                    labels = {(datum) => `${datum.category}`}
+                    labels = {(datum) => `${datum.category}: \n\$ ${datum.amount.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`}
                     // Animate
                     events={[
                         {
