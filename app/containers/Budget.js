@@ -24,7 +24,6 @@ class BudgetScreen extends React.Component {
     }
     render() {
         return (
-
             <View style = {styles.container} >
                 <Alpaca/>
                 <Alpaca/>

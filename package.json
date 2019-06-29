@@ -30,6 +30,7 @@
     "react-native-numeric-input": "^1.6.5",
     "react-native-paper": "^2.15.2",
     "react-native-reanimated": "^1.1.0",
+    "react-native-segmented-control-tab": "^3.4.0",
     "react-native-svg": "9.4.0",
     "react-native-swipe-list-view": "^1.5.5",
     "react-native-swipeable": "^0.6.0",
