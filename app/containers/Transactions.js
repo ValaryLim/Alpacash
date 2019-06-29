@@ -53,13 +53,13 @@ export default class Transactions extends Component {
         loading: true,
         trans: [],
         budget: [],
-        headerDate: moment()
+        headerDate: moment().startOf('week').add(1, 'days').format("YYYY-MM-DD")
       }
     }
 
     componentDidMount() {
       this.unsubscribe = this.ref
-        .where('date', '>=', moment().startOf('week').format("YYYY-MM-DD")) 
+        .where('date', '>=', this.state.headerDate) 
         .where('date', '<=', moment().endOf('week').format("YYYY-MM-DD")).onSnapshot(this.onCollectionUpdate);
       this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
       this.balance.onSnapshot((doc) => {
@@ -80,6 +80,7 @@ export default class Transactions extends Component {
     }
 
     onSelectingWeek(date) {
+      this.state.headerDate = date;
       endOfWeek = moment(date, "YYYY-MM-DD").add(7, 'days').format("YYYY-MM-DD");
       this.unsubscribe = this.ref.where('date', '>=', date).where('date', '<', endOfWeek).onSnapshot(this.onCollectionUpdate);
     }
@@ -211,10 +212,10 @@ export default class Transactions extends Component {
       const sections = [];
       var i;
       for (i = 0; i < 7; i++) {
-        currDate = moment(date, 'YYYY-MM-DD').add(i, 'days').format('YYYY-MM-DD')
+        currDate = moment(date, 'YYYY-MM-DD').add(i, 'days')
         sections.push({
-          title: currDate, 
-          data: this.generateDayData(currDate)
+          title: currDate.format('LL'), 
+          data: this.generateDayData(currDate.format('YYYY-MM-DD'))
         });
       }
       return sections;
@@ -269,24 +270,24 @@ export default class Transactions extends Component {
             <View style = {styles.container}>
                   <View style = {styles.header}>
                     <CalendarStrip
-                      key = "_calendar"
-                      style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
+                      style={{height:100, paddingTop: 20, paddingBottom: 10, width: '100%' }}
                       calendarHeaderStyle={{color: 'white', fontSize: 30, paddingBottom: 15, textTransform: "uppercase"}}
                       dateNumberStyle={{color: 'white'}}
                       dateNameStyle={{color: 'white'}}
                       selectedDate={this.state.headerDate}
                       onWeekChanged = {(date) => this.onSelectingWeek(date.format("YYYY-MM-DD"))}
                     />
-                    <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
+                    <Text style = {styles.headerText}> balance: ${parseFloat(this.state.balance).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</Text>
                   </View>
 
                 <SectionList
-                  renderItem={({item, index, section}) => <TransItem {...item}/>}
+                  renderItem={({item}) => <TransItem {...item}/>}
                   renderSectionHeader={({section: {title}}) => (
-                    <Text style={{fontWeight: 'bold'}}>{title}</Text>
+                    <View style = {styles.dateHeader}>
+                      <Text style={styles.dateText}>{title}</Text>
+                    </View>
                   )}
-                  sections={this.generateSections(moment("2019-06-24", "YYYY-MM-DD"))}
-                  keyExtractor={(item, index) => item + index}
+                  sections={this.generateSections(this.state.headerDate)}
                 />
   
                 {/* Add transactions popup window */}
@@ -310,8 +311,8 @@ export default class Transactions extends Component {
                             placeholder="Income/Expenditure"
                             selectedValue={this.state.type}
                             onValueChange={(value) => this.updateTransactionType(value)}>
-                              <OptionPicker.Item label="Income" value="income" />
-                              <OptionPicker.Item label="Expenditure" value="expenditure" />
+                              <OptionPicker.Item label="   Income" value="income" />
+                              <OptionPicker.Item label="   Expenditure" value="expenditure" />
                             </OptionPicker>
                           </Item>
                           <Item>
@@ -323,17 +324,27 @@ export default class Transactions extends Component {
                             />
                           </Item>
                           <Item picker>
+                          {this.state.type == "expenditure" ? (        
                            <OptionPicker
                               mode="dropdown"
                               placeholder="Category"
                               selectedValue={this.state.category}
-                              onValueChange={(value) => this.updateTransactionCategory(value)}>
-                                <OptionPicker.Item label="Food" value="Food" />
-                                <OptionPicker.Item label="Shopping" value="Shopping"/>
-                                <OptionPicker.Item label="Entertainment" value ="Entertainment"/>
-                                <OptionPicker.Item label="Transport" value ="Transport"/>
-                                <OptionPicker.Item label="Utilities" value ="Utilities"/>
+                              onValueChange={(value) => this.updateTransactionCategory(value)}>                
+                                <OptionPicker.Item label="   Food" value="Food" />
+                                <OptionPicker.Item label="   Shopping" value="Shopping"/>
+                                <OptionPicker.Item label="   Entertainment" value ="Entertainment"/>
+                                <OptionPicker.Item label="   Transport" value ="Transport"/>
+                                <OptionPicker.Item label="   Utilities" value ="Utilities"/> 
+                              </OptionPicker> ) : (
+                                <OptionPicker
+                                  mode="dropdown"
+                                  placeholder="Category"
+                                  selectedValue={this.state.category}
+                                  onValueChange={(value) => this.updateTransactionCategory(value)}>                
+                                <OptionPicker.Item label="   Work" value="Work" />
+                                <OptionPicker.Item label="   Allowance" value="Allowance"/>
                               </OptionPicker>
+                              )}
                           </Item>
                         </Form>
                         <DatePicker
@@ -349,10 +360,10 @@ export default class Transactions extends Component {
                               position: 'absolute',
                               left: 0,
                               top: 4,
-                              marginLeft: 10
+                              marginLeft: 15
                             },
                             dateInput: {
-                              marginLeft: 36,
+                              marginLeft: 60,
                               fontSize: 30
                             }
                           }}
@@ -363,8 +374,10 @@ export default class Transactions extends Component {
                           disabled={!this.state.title.length ||
                                     !this.state.amount.length ||
                                     !this.state.date.length}
-                          onPress={this.confirmButton}/>
-                       <Button title="Cancel" onPress={() => this.toggleModal()} />
+                          color="#00BDAA"
+                          onPress={this.confirmButton}
+                          />
+                       <Button fontColor = 'black' color = "#F17E7E" title="Cancel" onPress={() => this.toggleModal()} />
                         </View>      
                   </Modal>
                 </View>
@@ -390,7 +403,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 10,
+    flexDirection:'column',
     borderBottomColor: "#ddd",
+    height: '30%'
   },
   headerText: {
     color: "white",
@@ -406,6 +421,18 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
+  },
+  dateHeader: {
+    backgroundColor: '#5A6076',
+    height: 40,
+    justifyContent: 'center',
+    marginTop: 5
+  },
+  dateText: {
+    fontWeight: 'bold',
+    color: 'white',
+    marginLeft: '8%',
+    textTransform: 'uppercase'
   },
   textInput: {
     alignSelf: "stretch",
@@ -430,7 +457,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   addButtonWindow: {
-    backgroundColor: "#F66A73",
+    backgroundColor: "#fff",
     borderRadius: 10,
     width: 300,
     position: "relative",

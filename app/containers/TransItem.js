@@ -4,6 +4,7 @@ import {Button,
         View, 
         Text} from 'react-native';
 import {SwipeRow} from 'react-native-swipe-list-view';
+import Icon from 'react-native-vector-icons/FontAwesome5';  
 import firebase from 'react-native-firebase';
 
 export default class TransItem extends React.PureComponent {
@@ -12,7 +13,65 @@ export default class TransItem extends React.PureComponent {
         this.ref = firebase.firestore().collection('trans');
         this.balance = firebase.firestore().collection('trans').doc('balance');
         this.budget = firebase.firestore().collection('budget');
+        this.expense_categories = firebase.firestore().collection('expense_categories');
+        this.income_categories = firebase.firestore().collection('income_categories');
+        this.state = {
+          categoriesEx: [],
+          categoriesIn: [],
+          loading: true
+        }
     }
+
+    componentDidMount() {
+      this.unsubscribe_expense= this.expense_categories.onSnapshot(this.onCollectionUpdateEx);
+      this.unsubscribe_income= this.income_categories.onSnapshot(this.onCollectionUpdateIn);
+    }
+  
+  componentWillUnmount() {
+      this.unsubscribe();
+  }
+
+  onCollectionUpdateEx = (querySnapshot) => {
+      const categoriesEx = [];
+      querySnapshot.forEach((doc) => {
+        const { id, title, checked, color, icon } = doc.data();
+        
+        categoriesEx.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          id,
+          title,
+          checked,
+          color,
+          icon
+        });
+      });
+      this.setState({ 
+        categoriesEx,
+        loading: false
+     });
+  }
+
+    onCollectionUpdateIn = (querySnapshot) => {
+      const categoriesIn = [];
+      querySnapshot.forEach((doc) => {
+        const { id, title, checked, color, icon } = doc.data();
+        
+        categoriesIn.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          id,
+          title,
+          checked,
+          color,
+          icon
+        });
+      });
+      this.setState({ 
+        categoriesIn,
+        loading: false
+    });
+  }
 
     deleteTrans(deleteItemId) {
         this.ref.doc(deleteItemId).delete().then(function() {
@@ -86,8 +145,30 @@ export default class TransItem extends React.PureComponent {
         this.deleteTrans(id);
     }
 
+    getCategoryIcon(type, title) {
+      var icon = '';
+      if (type == 'expenditure') {
+      this.state.categoriesEx.map((cat) => {
+        if(cat.title == title) {
+          icon = cat.icon;
+        }
+      }); 
+    } else {
+      this.state.categoriesIn.map((cat) => {
+        if(cat.title == title) {
+          icon = cat.icon;
+        }
+      }); 
+    }
+      return icon;
+    }
+
     getStyleSheet(income) {          
         return income? incomeStyle : expendStyle;   
+    }
+
+    getColor() {
+      return income ? incomeStyle : expendStyle;   
     }
 
     render() {
@@ -95,11 +176,15 @@ export default class TransItem extends React.PureComponent {
         return (
             <SwipeRow rightOpenValue={-80}>
                 <View style={styles.standaloneRowBack}>
-							<Text style={styles.backTextWhite}>Edit</Text>
-                            <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category)}/>
-				</View>
+							    <Text style={styles.backTextWhite}>Edit</Text>
+                  <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category)}/>
+				        </View>
                 <View style={styles.item}>
-                    <Text style={styles.itemText}>{this.props.title} ${this.props.amount} {this.props.date} {this.props.category}</Text>
+                  <View style = {styles.leftBox}>
+                    <Icon size = {20} name={this.getCategoryIcon(this.props.type, this.props.category)} style = {styles.iconStyle}/>
+                    <Text style={styles.titleText}>{this.props.title}</Text>
+                  </View>
+                    <Text style={styles.amountText}> ${parseFloat(this.props.amount).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</Text>
                 </View>
             </SwipeRow>
             
@@ -115,49 +200,82 @@ const incomeStyle = StyleSheet.create({
         backgroundColor: "#7ACCC7",
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'flex-start'
+   
     },
-    itemText: {
+    leftBox: {
+      flexDirection: 'row',
+      width: '65%'
+    },
+    titleText: {
         color: "#fff",
-        fontSize: 15,
-        padding: 30
+        fontSize: 17,
+        marginLeft: '5%',
+    },
+    amountText: {
+      color: "#fff",
+      fontSize: 17,
+      alignSelf: 'flex-end' && 'center',
+   
+
+    },
+    iconStyle: {
+        marginLeft: '10%',
+        color:"#fff",
+        width: '5%'
+     
     },
     standaloneRowBack: {
-		alignItems: 'center',
-		backgroundColor: '#FB3E44',
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		padding: 8
-    },
-    backTextWhite: {
-		color: '#FFF'
+      alignItems: 'center',
+      backgroundColor: '#FB3E44',
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 8
+      },
+      backTextWhite: {
+      color: '#FFF'
 	},
 });
 
 const expendStyle = StyleSheet.create({
-    item: {
-        height: 50,
-        backgroundColor: "#F3C1C6",
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent:'flex-start'
-    },
-    itemText: {
-        color: "#fff",
-        fontSize: 15,
-        padding: 30
-    },
-    standaloneRowBack: {
-		alignItems: 'center',
-		backgroundColor: '#FB3E44',
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		padding: 8
-    },
-    backTextWhite: {
-		color: '#FFF'
-	},
+  item: {
+    height: 50,
+    backgroundColor: "#F3C1C7",
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+leftBox: {
+  flexDirection: 'row',
+  width: '65%'
+},
+titleText: {
+    color: "#fff",
+    fontSize: 17,
+    marginLeft: '5%'
+},
+amountText: {
+  color: "#fff",
+  fontSize: 17,
+  alignSelf: 'flex-end' && 'center',
+
+
+},
+iconStyle: {
+    marginLeft: '10%',
+    color:"#fff",
+    width: "5%"
+ 
+},
+standaloneRowBack: {
+  alignItems: 'center',
+  backgroundColor: '#FB3E44',
+  flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  padding: 8
+  },
+  backTextWhite: {
+  color: '#FFF'
+},
 });
 
