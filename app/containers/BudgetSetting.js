@@ -47,6 +47,59 @@ export default class BudgetSetting extends Component {
         this.unsubscribe_categories();
         this.unsubscribe_trans();
     }
+    
+
+      updateBudgetTitle(title) {
+        this.setState({title: title})
+      }
+
+      updateBudgetAmount(amount) {
+        this.setState({amount: amount})
+      }
+
+      updateSelectedCategories() {
+        this.state.categories.forEach((cat) => {
+          if (cat.checked) {
+            this.state.selected.push(cat.title);
+          }
+        });
+      }
+
+      updateCurrentAmount() {
+        this.state.selected.forEach((sel) => { 
+          this.state.trans.forEach((trans) => {
+            if (trans.category == sel)
+              this.state.currAmount += parseInt(trans.amount);
+          })
+      });
+      }    
+
+      addBudget() {
+        this.budget.add({
+          title: this.state.title,
+          amount: parseFloat(this.state.amount),
+          startDate: this.state.startDate,
+          endDate: this.state.endDate,
+          categories: this.state.selected,
+          currAmount: this.state.currAmount,
+        });
+        this.setState({
+          title: '',
+          amount: '',
+          startDate: '',
+          endDate: '',
+          selected: [],
+        })
+      }
+
+      confirmBudget() {
+        this.updateSelectedCategories();
+        this.updateCurrentAmount();
+        this.addBudget();
+        this.props.navigation.navigate('Budget');
+      }
+
+      
 
     onCollectionUpdate = (querySnapshot) => {
         const categories = [];
@@ -183,12 +236,11 @@ export default class BudgetSetting extends Component {
                     onChangeText = {(text) => this.updateBudgetAmount(text)}
                 />
                 </View>
-                </View>
+              </View>
                 <ScrollView style = {styles.categoryBox}>
                 {this.state.categories.map((cat) => {    
                     return (            
                     <CheckBox
-                            
                             key = {cat.id}
                             title={cat.title}
                             checkedIcon='dot-circle-o'

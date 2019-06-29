@@ -22,7 +22,6 @@ import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
 
 
-
 class BudgetScreen extends React.Component {
     constructor() {
         super();
@@ -63,7 +62,6 @@ class BudgetScreen extends React.Component {
     render() {
         return (
             <View style = {styles.container}>
-            
                 <View style = {styles.progressContainer}>
                     <BudgetChart/>
                 </View>
@@ -117,6 +115,9 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#1EE3CF"
         
+    },
+    progressContainer: {
+        marginTop: 10,
     },
     progressContainer: {
         marginTop: 10,
