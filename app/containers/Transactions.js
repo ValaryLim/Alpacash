@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { 
     StyleSheet,
     FlatList,
+    SectionList,
     View, 
     Text, 
     Image,
@@ -57,7 +58,9 @@ export default class Transactions extends Component {
     }
 
     componentDidMount() {
-      this.unsubscribe = this.ref.where('date', '==', moment().format("DD-MM-YYYY")).onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe = this.ref
+        .where('date', '>=', moment().startOf('week').format("YYYY-MM-DD")) 
+        .where('date', '<=', moment().endOf('week').format("YYYY-MM-DD")).onSnapshot(this.onCollectionUpdate);
       this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
@@ -74,6 +77,11 @@ export default class Transactions extends Component {
     
     onSelectingDate(date) {
       this.unsubscribe = this.ref.where('date', '==', date).onSnapshot(this.onCollectionUpdate);
+    }
+
+    onSelectingWeek(date) {
+      endOfWeek = moment(date, "YYYY-MM-DD").add(7, 'days').format("YYYY-MM-DD");
+      this.unsubscribe = this.ref.where('date', '>=', date).where('date', '<', endOfWeek).onSnapshot(this.onCollectionUpdate);
     }
 
     onCollectionUpdate = (querySnapshot) => {
@@ -199,7 +207,29 @@ export default class Transactions extends Component {
       this.setState({type: type})
     }
 
-    
+    generateSections(date) {
+      const sections = [];
+      var i;
+      for (i = 0; i < 7; i++) {
+        currDate = moment(date, 'YYYY-MM-DD').add(i, 'days').format('YYYY-MM-DD')
+        sections.push({
+          title: currDate, 
+          data: this.generateDayData(currDate)
+        });
+      }
+      return sections;
+    }
+
+    generateDayData(date) {
+      const data = [];
+      this.state.trans.forEach((item) => {
+        if(item.date == date) {
+          data.push(item);
+        }
+      });
+        return data;
+      }
+     
 
     addTransaction() {
       this.updateBalance(this.state.amount, this.state.type);
@@ -239,18 +269,24 @@ export default class Transactions extends Component {
             <View style = {styles.container}>
                   <View style = {styles.header}>
                     <CalendarStrip
+                      key = "_calendar"
                       style={{height:100, paddingTop: 20, paddingBottom: 10, width: 400 }}
                       calendarHeaderStyle={{color: 'white', fontSize: 30, paddingBottom: 15, textTransform: "uppercase"}}
                       dateNumberStyle={{color: 'white'}}
                       dateNameStyle={{color: 'white'}}
                       selectedDate={this.state.headerDate}
-                      onDateSelected = {(date) => this.onSelectingDate(date.format("YYYY-MM-DD"))}
+                      onWeekChanged = {(date) => this.onSelectingWeek(date.format("YYYY-MM-DD"))}
                     />
                     <Text style = {styles.headerText}> balance: ${this.state.balance}</Text>
                   </View>
-                <FlatList
-                  data={this.state.trans}
-                  renderItem={({ item }) => <TransItem {...item}/>}
+
+                <SectionList
+                  renderItem={({item, index, section}) => <TransItem {...item}/>}
+                  renderSectionHeader={({section: {title}}) => (
+                    <Text style={{fontWeight: 'bold'}}>{title}</Text>
+                  )}
+                  sections={this.generateSections(moment("2019-06-24", "YYYY-MM-DD"))}
+                  keyExtractor={(item, index) => item + index}
                 />
   
                 {/* Add transactions popup window */}
