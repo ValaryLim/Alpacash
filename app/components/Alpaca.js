@@ -104,8 +104,8 @@ export default class Alpaca extends Component {
                             require('../assets/images/alpacas/alpaca6_flipped.png')
                     }
                     style = {{ 
-                        width: 42, 
-                        height: 63,
+                        width: 60, 
+                        height: 200,
                         transform: this.moveValueHolder.getTranslateTransform()
                         }}
                 />

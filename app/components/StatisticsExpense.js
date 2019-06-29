@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions} from "react-native";
 import { 
     VictoryLabel, VictoryPie, VictoryLine, VictoryChart, VictoryAxis, VictoryTooltip, VictoryScatter, VictoryGroup, VictorySharedEvents
 } from "victory-native";
@@ -12,7 +12,8 @@ export default class StatisticsExpense extends React.Component {
         this.trans = firebase.firestore().collection('trans');
         this.expense_categories = firebase.firestore().collection('expense_categories');
         this.unsubscribe_data = null;
-
+        this.screenWidth = Math.round(Dimensions.get('window').width);
+        this.screenHeight = Math.round(Dimensions.get('window').height);
         this.state = {
             loading_data: true,
             data: [],
@@ -135,7 +136,7 @@ export default class StatisticsExpense extends React.Component {
         var categoryData = this.getCategoryData();
 
         return (
-            <Svg width={400} height={400} viewBox="-70 -10 400 400" style={{ width: "auto", height: "auto" }}>
+            <Svg width={400} height={500} viewBox="-70 -10 510 400" style={{ width: "auto", height: "auto" }}>
                 <VictoryPie
                     name = "pie"
                     standalone = { false }
@@ -192,9 +193,9 @@ export default class StatisticsExpense extends React.Component {
                     ]}
 
                     // Style
-                    labelRadius = { 95 }
-                    innerRadius = { 40 }
-                    radius = { 80 }
+                    labelRadius = {0.45*this.screenWidth}
+                    innerRadius = {0.2*this.screenWidth}
+                    radius = {0.4*this.screenWidth}
                     padAngle = { 1.5 }
                     style = {{
                         data: {
@@ -202,7 +203,7 @@ export default class StatisticsExpense extends React.Component {
                             fillOpacity: 0.5
                         },
                         labels: {
-                            fontSize: 8,
+                            fontSize: 16,
                             fontWeight: "normal",
                             fill: "#757575"
                         }
