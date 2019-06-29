@@ -7,15 +7,16 @@ import {
     Animated,
     Image,
     Easing,
-    Dimensions, 
-    PanResponder
+    Dimensions
 } from "react-native";
+
 
 import { Icon } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
+import Gestures from 'react-native-easy-gestures';
 
-import Alpaca from "../components/Alpaca";
+import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 
 
@@ -23,22 +24,25 @@ class BudgetScreen extends React.Component {
     constructor() {
         super();
         this.ref = firebase.firestore().collection('budget');
-        this.screenWidth = Dimensions.get("window").width;
-        this.screenHeight = Dimensions.get("window").height;
     }
     render() {
         return (
-            <View style = {styles.container} >
-                <Alpaca/>
-                <Alpaca/>
-                <Alpaca/>
-                <Alpaca/>
-                <Icon 
-                    name='add-circle-outline'
-                    type='material'
-                    color='#fff'
-                    size={30}
-                    onPress={() => this.props.navigation.navigate('BudgetSetting')} />
+            <View style = {styles.container}>
+                <View style = {styles.alpacaContainer} >
+                    <MovableAlpaca/>
+                    <MovableAlpaca/>
+                    <MovableAlpaca/>
+                    <MovableAlpaca/>
+                    <MovableAlpaca/>
+                </View>
+                <View style = {styles.navigationContainer}>
+                    <Icon 
+                        name='add-circle-outline'
+                        type='material'
+                        color='#fff'
+                        size={30}
+                        onPress={() => this.props.navigation.navigate('BudgetSetting')} />
+                </View>
             </View>
         );
     }
@@ -70,7 +74,13 @@ const styles = StyleSheet.create({
     container: {
         height: "100%",
         width: "100%",
-        backgroundColor: "#1EE3CF",
+        backgroundColor: "#1EE3CF"
     },
+    alpacaContainer: {
+        flex: 0.85
+    },
+    navigationContainer: {
+        flex: 0.15
+    }
   });
 
