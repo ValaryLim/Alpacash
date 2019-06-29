@@ -14,8 +14,6 @@ import {
 import { Icon } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
-import Draggable from 'react-native-draggable';
-
 
 import Alpaca from "../components/Alpaca";
 import BudgetSetting from './BudgetSetting.js';

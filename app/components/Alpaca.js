@@ -31,18 +31,7 @@ export default class Alpaca extends Component {
         // Set state
         this.state = {
             faceLeft: this.generateRandomInitialDirection(),
-            pan: new Animated.ValueXY(),
-            position: {x: initialX, y: initialY}
         };
-
-        // Create draggable option
-        this.panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onPanResponderMove : (event, gesture) => {
-                this.state.position.setValue({x: gesture.dx, y: gesture.dy});
-            },
-            onPanResponderRelease: (e, gesture) => {}
-        });
     }
 
     generateRandomInitialDirection() {
@@ -102,14 +91,11 @@ export default class Alpaca extends Component {
         }).start(() => setTimeout(() => this.flipImage(), randomPause));
     }
 
-
-
       
     render() {
         return(
             <View>
                 <Animated.Image
-                    {...this.panResponder.panHandlers} 
                     resizeMode = "contain"
                     source = {
                         // if left is true, face left, else face right
