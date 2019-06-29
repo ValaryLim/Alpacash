@@ -83,4 +83,3 @@ const styles = StyleSheet.create({
         flex: 0.15
     }
   });
-
