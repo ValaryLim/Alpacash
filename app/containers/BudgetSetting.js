@@ -40,8 +40,7 @@ export default class BudgetSetting extends Component {
 
     componentDidMount() {
         this.unsubscribe_categories= this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
-        this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
-        
+        this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate); 
       }
     
     componentWillUnmount() {
