@@ -28,7 +28,8 @@ export default class TransItem extends React.PureComponent {
     }
   
   componentWillUnmount() {
-      this.unsubscribe();
+      this.unsubscribe_expense();
+      this.unsubscribe_income();
   }
 
   onCollectionUpdateEx = (querySnapshot) => {

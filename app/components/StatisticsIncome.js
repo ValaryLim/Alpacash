@@ -1,21 +1,18 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import { 
     VictoryLabel, VictoryPie, VictoryLine, VictoryChart, VictoryAxis, VictoryTooltip, VictoryScatter, VictoryGroup, VictorySharedEvents
 } from "victory-native";
 import { Svg, G } from "react-native-svg";
 import firebase from 'react-native-firebase';
 
-const categoryColors = {
-    Work: "#7189BF",
-    Allowance: "#DF7599",
-};
-
 export default class StatisticsIncome extends React.Component {
     constructor() {
         super();
         this.trans = firebase.firestore().collection('trans');
         this.income_categories = firebase.firestore().collection('income_categories');
+        this.screenWidth = Math.round(Dimensions.get('window').width);
+        this.screenHeight = Math.round(Dimensions.get('window').height);
         this.unsubscribe = null;
 
         this.state = {
@@ -140,7 +137,7 @@ export default class StatisticsIncome extends React.Component {
         var categoryData = this.getCategoryData();
 
         return (
-            <Svg width={400} height={400} viewBox="-70 -10 400 400" style={{ width: "auto", height: "auto" }}>
+            <Svg width={400} height={500} viewBox="-70 -10 510 400" style={{ width: "auto", height: "auto" }}>
                 <VictoryPie
                     name = "pie"
                     standalone = { false }
@@ -197,9 +194,9 @@ export default class StatisticsIncome extends React.Component {
                     ]}
 
                     // Style
-                    labelRadius = { 95 }
-                    innerRadius = { 40 }
-                    radius = { 80 }
+                    labelRadius = {0.45*this.screenWidth}
+                    innerRadius = {0.2*this.screenWidth}
+                    radius = {0.4*this.screenWidth}
                     padAngle = { 1.5 }
                     style = {{
                         data: {
@@ -207,7 +204,7 @@ export default class StatisticsIncome extends React.Component {
                             fillOpacity: 0.5
                         },
                         labels: {
-                            fontSize: 8,
+                            fontSize: 16,
                             fontWeight: "normal",
                             fill: "#757575"
                         }

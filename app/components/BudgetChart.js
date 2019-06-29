@@ -56,14 +56,17 @@ export default class BudgetChart extends React.Component {
                 {this.state.data.map((bud) => {
                     const progressPercentage = bud.currAmount / bud.amount;
                     return (
-                        <View key = {bud.doc.id}>
+                        <View key = {bud.doc.id} style = {styles.barBox}>
+                            <Text> {bud.title} </Text>
                             <Progress.Bar 
                             progress = { progressPercentage } 
                             width = {200} 
+                            height = "100%"
                             color = "#E42C64"
                             unfilledColor = "#FFFFFF"
                             borderColor = "#FFFFFF"
                             />
+                            <Text> {progressPercentage*100}% </Text>
                         </View>
                     );
                 })}
@@ -72,3 +75,15 @@ export default class BudgetChart extends React.Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+       flex: 1
+    },
+    barBox: {
+        flexDirection: 'row',
+        height: 20,
+        marginBottom: 5,
+        alignSelf: 'flex-end'
+    }
+  });
