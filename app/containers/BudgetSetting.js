@@ -138,7 +138,7 @@ export default class BudgetSetting extends Component {
       addBudget() {
         this.budget.add({
           title: this.state.title,
-          amount: this.state.amount,
+          amount: parseFloat(this.state.amount),
           startDate: this.state.startDate,
           endDate: this.state.endDate,
           categories: this.state.selected,

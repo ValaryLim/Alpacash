@@ -36,6 +36,7 @@ export default class Transactions extends Component {
       super();
       this.ref = firebase.firestore().collection('trans');
       this.balance = firebase.firestore().collection('trans').doc('balance');
+      this.budget = firebase.firestore().collection('budget');
       this.currBalance = null;
       this.unsubscribe = null;
       this.state = {
@@ -44,18 +45,20 @@ export default class Transactions extends Component {
         balance: 0,
         title: '',
         amount: '',
-        category: 'food',
+        category: 'Food',
         date: '',
         month:'',
         type: 'income',
         loading: true,
         trans: [],
+        budget: [],
         headerDate: moment()
       }
     }
 
     componentDidMount() {
       this.unsubscribe = this.ref.where('date', '==', moment().format("DD-MM-YYYY")).onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
         this.setState ({
@@ -66,6 +69,7 @@ export default class Transactions extends Component {
   
     componentWillUnmount() {
       this.unsubscribe();
+      this.unsubscribe_budget();
     }
     
     onSelectingDate(date) {
@@ -94,6 +98,27 @@ export default class Transactions extends Component {
         loading: false,
      });
     }
+
+    onBudgetUpdate = (querySnapshot) => {
+      const budget = [];
+      querySnapshot.forEach((doc) => {
+        const { categories, currAmount, amount } = doc.data();
+        
+        budget.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          categories,
+          currAmount,
+          amount
+        });
+
+      });
+    
+      this.setState({ 
+        budget,
+        loading: false,
+     });
+    }
     
     updateBalance(amount, type) {
       firebase.firestore().runTransaction(async transaction => {
@@ -119,6 +144,37 @@ export default class Transactions extends Component {
       });
     }
 
+    updateCurrentAmount(amount, docId) {
+      firebase.firestore().runTransaction(async transaction => {
+        const doc = await transaction.get(this.budget.doc(docId));
+        if (!doc.exists) {
+          transaction.set(this.budget.doc(docId), { currAmount: 0 });
+          return 0;
+        }
+
+          const newAmount = doc.data().currAmount + parseInt(amount);
+
+        transaction.update(this.budget.doc(docId), {
+          currAmount: newAmount,
+        });
+        return newAmount;
+      })
+      .catch(error => {
+        console.log('Transaction failed: ', error);
+      });
+    }
+
+    updateBudget() {
+      this.state.budget.forEach((budget) => {
+        budget.categories.forEach((cat) => {
+          if (this.state.category == cat) {
+            this.updateCurrentAmount(this.state.amount, budget.doc.id);
+          }
+        });
+      });
+    }
+
+  
     updateTransactionTitle(title) {
       this.setState({title: title})
     }
@@ -147,6 +203,7 @@ export default class Transactions extends Component {
 
     addTransaction() {
       this.updateBalance(this.state.amount, this.state.type);
+      this.updateBudget();
       this.ref.add({
         title: this.state.title,
         amount: this.state.amount,
