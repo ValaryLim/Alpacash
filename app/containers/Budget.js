@@ -3,7 +3,7 @@ import {
     StyleSheet,
     View, 
     Text, 
-    TouchableWithoutFeedback,
+    ImageBackground,
     Animated,
     Image,
     Easing,
@@ -20,6 +20,7 @@ import * as Progress from 'react-native-progress';
 import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
+
 
 
 class BudgetScreen extends React.Component {
@@ -62,6 +63,7 @@ class BudgetScreen extends React.Component {
     render() {
         return (
             <View style = {styles.container}>
+            
                 <View style = {styles.progressContainer}>
                     <BudgetChart/>
                 </View>
@@ -77,10 +79,12 @@ class BudgetScreen extends React.Component {
                         name='add-circle-outline'
                         type='material'
                         color='#fff'
-                        size={30}
+                        size={45}
                         onPress={() => this.props.navigation.navigate('BudgetSetting')} />
+                        
                 </View>
-            </View>
+                </View>
+            
         );
     }
 }
@@ -112,12 +116,15 @@ const styles = StyleSheet.create({
         height: "100%",
         width: "100%",
         backgroundColor: "#1EE3CF"
+        
     },
     progressContainer: {
         marginTop: 10,
     },
     alpacaContainer: {
-        flex: 0.85
+        flex: 0.85,
+        flexDirection: 'column',
+        height: "60%",
     },
     navigationContainer: {
         flex: 0.15

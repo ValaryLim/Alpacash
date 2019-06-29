@@ -171,20 +171,24 @@ export default class BudgetSetting extends Component {
                     autoCapitalize = 'characters'
                     underlineColorAndroid = 'transparent'
                     onChangeText = {(text) => this.updateBudgetTitle(text)}
+                    maxLength = {20}
                 />
+                <View style = {styles.amountContainer}>
+                <Text style = {{fontSize: 30, color: 'white'}}>$</Text>
                 <TextInput style = {styles.budgetAmount}
-                    placeholder='Enter budget amount'
+                    placeholder='Enter amount'
                     placeholderTextColor = 'white'
                     keyboardType ='numeric'
                     underlineColorAndroid = 'transparent'
                     onChangeText = {(text) => this.updateBudgetAmount(text)}
                 />
                 </View>
+                </View>
                 <ScrollView style = {styles.categoryBox}>
                 {this.state.categories.map((cat) => {    
                     return (            
                     <CheckBox
-                            center
+                            
                             key = {cat.id}
                             title={cat.title}
                             checkedIcon='dot-circle-o'
@@ -226,11 +230,20 @@ const styles = StyleSheet.create({
     height: '30%',
     alignItems: 'center'
   },
+  amountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   budgetTitle: {
-    fontSize: 15
+    fontSize: 15,
+    color: 'white',
+    textAlign: 'center'
   },
   budgetAmount: {
-    fontSize: 30
+    fontSize: 30,
+    color: 'white',
+    textAlign: 'center'
   },
   categoryBox: {
       backgroundColor: '#fff'

@@ -147,7 +147,7 @@ export default class TransItem extends React.PureComponent {
     }
 
     getCategoryIcon(type, title) {
-      var icon = '';
+      var icon;
       if (type == 'expenditure') {
       this.state.categoriesEx.map((cat) => {
         if(cat.title == title) {

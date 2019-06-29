@@ -46,21 +46,21 @@ export default class Transactions extends Component {
         balance: 0,
         title: '',
         amount: '',
-        category: 'Food',
+        category: 'Work',
         date: '',
         month:'',
         type: 'income',
         loading: true,
         trans: [],
         budget: [],
-        headerDate: moment().startOf('week').add(1, 'days').format("YYYY-MM-DD")
+        headerDate: moment().startOf('isoWeek').format("YYYY-MM-DD")
       }
     }
 
     componentDidMount() {
       this.unsubscribe = this.ref
         .where('date', '>=', this.state.headerDate) 
-        .where('date', '<=', moment().endOf('week').format("YYYY-MM-DD")).onSnapshot(this.onCollectionUpdate);
+        .where('date', '<=', moment().endOf('isoWeek').format("YYYY-MM-DD")).onSnapshot(this.onCollectionUpdate);
       this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
@@ -80,9 +80,10 @@ export default class Transactions extends Component {
     }
 
     onSelectingWeek(date) {
-      this.state.headerDate = date;
-      endOfWeek = moment(date, "YYYY-MM-DD").add(7, 'days').format("YYYY-MM-DD");
-      this.unsubscribe = this.ref.where('date', '>=', date).where('date', '<', endOfWeek).onSnapshot(this.onCollectionUpdate);
+      startOfWeek = moment(date, "YYYY-MM-DD").startOf('isoWeek').format('YYYY-MM-DD');
+      endOfWeek = moment(date, "YYYY-MM-DD").endOf('isoWeek').format("YYYY-MM-DD");
+      this.state.headerDate = startOfWeek;
+      this.unsubscribe = this.ref.where('date', '>=', startOfWeek).where('date', '<=', endOfWeek).onSnapshot(this.onCollectionUpdate);
     }
 
     onCollectionUpdate = (querySnapshot) => {
@@ -246,7 +247,8 @@ export default class Transactions extends Component {
       this.setState({
         title: '',
         amount: '',
-        category: 'Food',
+        category: 'Work',
+        headerDate: moment(this.state.date, 'YYYY-MM-DD').startOf('isoWeek').format('YYYY-MM-DD'),
         date: '',
         type: 'income',
         month:''
@@ -258,8 +260,9 @@ export default class Transactions extends Component {
     }
     
     confirmButton = () => {
-      this.toggleModal();
       this.addTransaction();
+      this.toggleModal();
+      this.onSelectingWeek(this.state.headerDate);
     };
 
     render() {
@@ -335,7 +338,8 @@ export default class Transactions extends Component {
                                 <OptionPicker.Item label="   Entertainment" value ="Entertainment"/>
                                 <OptionPicker.Item label="   Transport" value ="Transport"/>
                                 <OptionPicker.Item label="   Utilities" value ="Utilities"/> 
-                              </OptionPicker> ) : (
+                              </OptionPicker> ) : 
+                              (
                                 <OptionPicker
                                   mode="dropdown"
                                   placeholder="Category"
