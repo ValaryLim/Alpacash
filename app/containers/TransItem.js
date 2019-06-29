@@ -11,6 +11,7 @@ export default class TransItem extends React.PureComponent {
         super();
         this.ref = firebase.firestore().collection('trans');
         this.balance = firebase.firestore().collection('trans').doc('balance');
+        this.budget = firebase.firestore().collection('budget');
     }
 
     deleteTrans(deleteItemId) {
@@ -44,9 +45,44 @@ export default class TransItem extends React.PureComponent {
           console.log('Transaction failed: ', error);
         });
       }
-    
-    deleteButton(amount, type, id) {
+
+    updateCurrentAmount(amount, docId) {
+        firebase.firestore().runTransaction(async transaction => {
+          const doc = await transaction.get(this.budget.doc(docId));
+          if (!doc.exists) {
+            transaction.set(this.budget.doc(docId), { currAmount: 0 });
+            return 0;
+          }
+  
+            const newAmount = doc.data().currAmount - parseInt(amount);
+  
+          transaction.update(this.budget.doc(docId), {
+            currAmount: newAmount,
+          });
+          return newAmount;
+        })
+        .catch(error => {
+          console.log('Transaction failed: ', error);
+        });
+      }
+  
+    updateBudget(amount, category) {
+        this.budget.where('categories', 'array-contains', category).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              console.log(doc.id, " => ", doc.data());
+              // Build doc ref from doc.id
+              this.updateCurrentAmount(amount,doc.id);
+              
+          });
+         })
+      }
+
+    deleteButton(amount, type, id, category) {
         this.updateBalanceWhenDelete(amount, type);
+        if (type == 'expenditure') {
+          this.updateBudget(amount, category)
+        }
         this.deleteTrans(id);
     }
 
@@ -60,7 +96,7 @@ export default class TransItem extends React.PureComponent {
             <SwipeRow rightOpenValue={-80}>
                 <View style={styles.standaloneRowBack}>
 							<Text style={styles.backTextWhite}>Edit</Text>
-                            <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id)}/>
+                            <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category)}/>
 				</View>
                 <View style={styles.item}>
                     <Text style={styles.itemText}>{this.props.title} ${this.props.amount} {this.props.date} {this.props.category}</Text>

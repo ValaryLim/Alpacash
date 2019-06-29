@@ -215,7 +215,7 @@ export default class Transactions extends Component {
       this.setState({
         title: '',
         amount: '',
-        category: '',
+        category: 'Food',
         date: '',
         type: 'income',
         month:''
