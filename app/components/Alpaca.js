@@ -24,7 +24,7 @@ export default class Alpaca extends Component {
         var initialX = Math.floor(Math.random() * this.halfScreenWidth) + this.halfScreenWidth - 50;
         var initialY = Math.floor(Math.random() * this.screenHeight/12);
 
-        // Initialise value holders
+        // Initialize value holders
         this.moveValueHolder = new Animated.ValueXY({x: initialX, y: initialY});
         this.flipValueHolder = new Animated.Value(0);
 
