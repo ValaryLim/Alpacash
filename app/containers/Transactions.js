@@ -69,7 +69,7 @@ export default class Transactions extends Component {
     }
     
     onSelectingDate(date) {
-      this.unsubscribe = this.ref.where('date', '>=', date).onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe = this.ref.where('date', '==', date).onSnapshot(this.onCollectionUpdate);
     }
 
     onCollectionUpdate = (querySnapshot) => {

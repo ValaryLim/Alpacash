@@ -8,6 +8,9 @@ import {
 import { CheckBox, Text} from 'react-native-elements';
 import {Button} from 'native-base';
 import firebase from 'react-native-firebase';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+
+import Budget from './Budget.js';
 
 /*
     other import statements or 
@@ -18,21 +21,32 @@ export default class BudgetSetting extends Component {
         super();
         this.ref = firebase.firestore().collection('expense_categories');
         this.budget = firebase.firestore().collection('budget');
+        this.trans = firebase.firestore().collection('trans');
         this.checkbox = null;
         this.unsubscribe = null;
+        this.unsubscribe_trans = null;
         this.state = {
             categories: [],
+            trans: [],
             loading: true,
-            
+            title: '',
+            amount: '',
+            startDate: '',
+            endDate: '',
+            selected: [],
+            currAmount: 0,
         };
     }
 
     componentDidMount() {
-        this.unsubscribe = this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
+        this.unsubscribe_categories= this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
+        this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
+        
       }
     
     componentWillUnmount() {
-        this.unsubscribe();
+        this.unsubscribe_categories();
+        this.unsubscribe_trans();
     }
 
     onCollectionUpdate = (querySnapshot) => {
@@ -55,6 +69,25 @@ export default class BudgetSetting extends Component {
        });
     }
 
+    onTransUpdate = (querySnapshot) => {
+      const trans = [];
+      querySnapshot.forEach((doc) => {
+        const { date, amount, category} = doc.data();
+        
+        trans.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          amount,
+          category,
+          date
+        });
+      });
+      this.setState({ 
+        trans,
+        loading: false
+     });
+  }
+
     toggleCheckbox(id) {
       this.checkbox = this.ref.doc(id);
         firebase.firestore().runTransaction(async transaction => {
@@ -74,18 +107,60 @@ export default class BudgetSetting extends Component {
         .catch(error => {
           console.log('Transaction failed: ', error);
         });
+    }
+    
+
+      updateBudgetTitle(title) {
+        this.setState({title: title})
       }
 
-      toggleCheckbox2(id) {
-        firebase.firestore().collection("expense_categories").where("id", "==", id)
-        .get()
-        .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                console.log(doc.id, " => ", doc.data());
-                doc.update(doc, {checked: !doc.data().checked});
-            });
-         })
+      updateBudgetAmount(amount) {
+        this.setState({amount: amount})
       }
+
+      updateSelectedCategories() {
+        this.state.categories.forEach((cat) => {
+          if (cat.checked) {
+            this.state.selected.push(cat.title);
+          }
+        });
+      }
+
+      updateCurrentAmount() {
+        this.state.selected.forEach((sel) => { 
+          this.state.trans.forEach((trans) => {
+            if (trans.category == sel)
+              this.state.currAmount += parseInt(trans.amount);
+          })
+      });
+      }    
+
+      addBudget() {
+        this.budget.add({
+          title: this.state.title,
+          amount: this.state.amount,
+          startDate: this.state.startDate,
+          endDate: this.state.endDate,
+          categories: this.state.selected,
+          currAmount: this.state.currAmount,
+        });
+        this.setState({
+          title: '',
+          amount: '',
+          startDate: '',
+          endDate: '',
+          selected: [],
+        })
+      }
+
+      confirmBudget() {
+        this.updateSelectedCategories();
+        this.updateCurrentAmount();
+        this.addBudget();
+        this.props.navigation.navigate('Budget');
+      }
+
+      
 
     render() {
         return (
@@ -96,12 +171,14 @@ export default class BudgetSetting extends Component {
                     placeholderTextColor = 'white'
                     autoCapitalize = 'characters'
                     underlineColorAndroid = 'transparent'
+                    onChangeText = {(text) => this.updateBudgetTitle(text)}
                 />
                 <TextInput style = {styles.budgetAmount}
                     placeholder='Enter budget amount'
                     placeholderTextColor = 'white'
                     keyboardType ='numeric'
                     underlineColorAndroid = 'transparent'
+                    onChangeText = {(text) => this.updateBudgetAmount(text)}
                 />
                 </View>
                 <ScrollView style = {styles.categoryBox}>
@@ -114,18 +191,20 @@ export default class BudgetSetting extends Component {
                             checkedIcon='dot-circle-o'
                             uncheckedIcon='circle-o'
                             checked={cat.checked}
-                            onPress = {() => this.toggleCheckbox(cat.doc.id)}  
+                            onPress = {() => this.toggleCheckbox(cat.doc.id) } 
                     />
                     )
                 })}
                 </ScrollView>
                 <View style = {styles.footer}>
                   <Button rounded success 
-                    style = {styles.confirmButton}> 
+                    style = {styles.confirmButton}
+                    onPress = {() => this.confirmBudget()}> 
                     <Text> Confirm</Text>
                   </Button>
                   <Button rounded danger
-                    style = {styles.confirmButton}>
+                    style = {styles.confirmButton}
+                    onPress = {() => this.props.navigation.navigate('Budget')}>
                       <Text> Delete </Text>
                   </Button>
                 </View>
@@ -134,6 +213,7 @@ export default class BudgetSetting extends Component {
         );
     }
   }
+
 
 /**
  * StyleSheet
@@ -148,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   budgetTitle: {
-    fontSize: 15,
+    fontSize: 15
   },
   budgetAmount: {
     fontSize: 30
