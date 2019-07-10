@@ -3,9 +3,9 @@
 Testing Alpacash
 ------
 #### Prerequisites to run Alpacash
-react-native-cli: 2.0.1  
-react-native: 0.59.8  
-Android Studio (or working emulator)  
++ react-native-cli: 2.0.1  
++ react-native: 0.59.8  
++ Android Studio (or working emulator)  
 
 #### Steps to install and test Alpacash
 1. Install react native and android studio
