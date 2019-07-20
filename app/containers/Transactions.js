@@ -53,14 +53,16 @@ export default class Transactions extends Component {
         loading: true,
         trans: [],
         budget: [],
-        headerDate: moment().startOf('isoWeek').format("YYYY-MM-DD")
+        headerDate: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+        startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+        endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD")
       }
     }
 
     componentDidMount() {
       this.unsubscribe = this.ref
-        .where('date', '>=', this.state.headerDate) 
-        .where('date', '<=', moment().endOf('isoWeek').format("YYYY-MM-DD")).onSnapshot(this.onCollectionUpdate);
+        .where('date', '>=', this.state.startWeek) 
+        .where('date', '<=', this.state.endWeek).onSnapshot(this.onCollectionUpdate);
       this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
@@ -175,13 +177,15 @@ export default class Transactions extends Component {
     }
 
     updateBudget() {
-      this.state.budget.forEach((budget) => {
-        budget.categories.forEach((cat) => {
-          if (this.state.category == cat) {
-            this.updateCurrentAmount(this.state.amount, budget.doc.id);
-          }
+      if (this.state.date >= this.state.startWeek && this.state.date <= this.state.endWeek) {
+        this.state.budget.forEach((budget) => {
+          budget.categories.forEach((cat) => {
+            if (this.state.category == cat) {
+              this.updateCurrentAmount(this.state.amount, budget.doc.id);
+            }
+          });
         });
-      });
+      }
     }
 
   
