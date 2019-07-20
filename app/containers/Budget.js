@@ -31,6 +31,7 @@ class BudgetScreen extends React.Component {
         this.unsubscribe = null;
         this.state = {
             budget:[],
+            alpacas: {'level1': 1},
             loading: true,
         }
     }
@@ -39,6 +40,7 @@ class BudgetScreen extends React.Component {
         this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate); 
         if (moment().format('dddd') == "Monday") {
             this.budget.forEach((budget) => {
+                // add alpaca if under budget 
                 this.resetBudget(budget.doc.id);
             });
         }
@@ -86,18 +88,20 @@ class BudgetScreen extends React.Component {
             console.log('Transaction failed: ', error);
           });
     }
+
     render() {
+        var renderAlpacas = [];
+        for (let i = 0; i < this.state.alpacas['level1']; i++) {
+            renderAlpacas.push(<MovableAlpaca key = {i} />)
+        };
+
         return (
             <View style = {styles.container}>
                 <View style = {styles.progressContainer}>
                     <BudgetChart/>
                 </View>
                 <View style = {styles.alpacaContainer} >
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
+                    { renderAlpacas }
                 </View>
                 <View style = {styles.navigationContainer}>
                     <Icon 
