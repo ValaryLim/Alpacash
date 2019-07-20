@@ -8,6 +8,7 @@ import {
 import { CheckBox, Text} from 'react-native-elements';
 import {Button} from 'native-base';
 import firebase from 'react-native-firebase';
+import moment from 'moment';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import Budget from './Budget.js';
@@ -31,8 +32,8 @@ export default class BudgetSetting extends Component {
             loading: true,
             title: '',
             amount: '',
-            startDate: '',
-            endDate: '',
+            startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
             selected: [],
             currAmount: 0,
         };
@@ -40,7 +41,8 @@ export default class BudgetSetting extends Component {
 
     componentDidMount() {
         this.unsubscribe_categories= this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
-        this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate); 
+        this.unsubscribe_trans = this.trans.where('date', '>=', this.state.startWeek) 
+        .where('date', '<=', this.state.endWeek).onSnapshot(this.onTransUpdate);
       }
     
     componentWillUnmount() {
@@ -68,26 +70,23 @@ export default class BudgetSetting extends Component {
       updateCurrentAmount() {
         this.state.selected.forEach((sel) => { 
           this.state.trans.forEach((trans) => {
-            if (trans.category == sel)
+            if (trans.category == sel) {
               this.state.currAmount += parseInt(trans.amount);
-          })
+          }
       });
-      }    
+      });
+    }    
 
       addBudget() {
         this.budget.add({
           title: this.state.title,
           amount: parseFloat(this.state.amount),
-          startDate: this.state.startDate,
-          endDate: this.state.endDate,
           categories: this.state.selected,
           currAmount: this.state.currAmount,
         });
         this.setState({
           title: '',
           amount: '',
-          startDate: '',
-          endDate: '',
           selected: [],
         })
       }
@@ -191,16 +190,12 @@ export default class BudgetSetting extends Component {
         this.budget.add({
           title: this.state.title,
           amount: parseFloat(this.state.amount),
-          startDate: this.state.startDate,
-          endDate: this.state.endDate,
           categories: this.state.selected,
           currAmount: this.state.currAmount,
         });
         this.setState({
           title: '',
           amount: '',
-          startDate: '',
-          endDate: '',
           selected: [],
         })
       }

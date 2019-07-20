@@ -14,12 +14,14 @@ import {
 import { Icon } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
+import moment from 'moment';
 import Gestures from 'react-native-easy-gestures';
 import * as Progress from 'react-native-progress';
 
 import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
+
 
 
 class BudgetScreen extends React.Component {
@@ -29,12 +31,17 @@ class BudgetScreen extends React.Component {
         this.unsubscribe = null;
         this.state = {
             budget:[],
-            loading: true
+            loading: true,
         }
     }
 
     componentDidMount() {
         this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate); 
+        if (moment().format('dddd') == "Monday") {
+            this.budget.forEach((budget) => {
+                this.resetBudget(budget.doc.id);
+            });
+        }
       }
     
     componentWillUnmount() {
@@ -58,6 +65,26 @@ class BudgetScreen extends React.Component {
           budget, 
           loading: false
        });
+    }
+
+    resetBudget(docId) {
+        firebase.firestore().runTransaction(async transaction => {
+            const doc = await transaction.get(this.ref.doc(docId));
+            if (!doc.exists) {
+              transaction.set(this.budget.doc(docId), { currAmount: 0 });
+              return 0;
+            }
+    
+              const newAmount = 0;
+    
+            transaction.update(this.budget.doc(docId), {
+              currAmount: newAmount,
+            });
+            return newAmount;
+          })
+          .catch(error => {
+            console.log('Transaction failed: ', error);
+          });
     }
     render() {
         return (

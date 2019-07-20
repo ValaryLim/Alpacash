@@ -6,6 +6,7 @@ import {Button,
 import {SwipeRow} from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome5';  
 import firebase from 'react-native-firebase';
+import moment from 'moment';
 
 export default class TransItem extends React.PureComponent {
     constructor() {
@@ -18,7 +19,9 @@ export default class TransItem extends React.PureComponent {
         this.state = {
           categoriesEx: [],
           categoriesIn: [],
-          loading: true
+          loading: true,
+          startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+          endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
         }
     }
 
@@ -138,9 +141,11 @@ export default class TransItem extends React.PureComponent {
          })
       }
 
-    deleteButton(amount, type, id, category) {
-        this.updateBalanceWhenDelete(amount, type);
-        if (type == 'expenditure') {
+    deleteButton(amount, type, id, category, date) {
+        this.updateBalanceWhenDelete(amount, type, date);
+        if (type == 'expenditure' && 
+              date <= this.state.startWeek &&
+              date >= this.state.endWeek) {
           this.updateBudget(amount, category)
         }
         this.deleteTrans(id);
@@ -178,7 +183,7 @@ export default class TransItem extends React.PureComponent {
             <SwipeRow rightOpenValue={-80}>
                 <View style={styles.standaloneRowBack}>
 							    <Text style={styles.backTextWhite}>Edit</Text>
-                  <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category)}/>
+                  <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category, this.props.date)}/>
 				        </View>
                 <View style={styles.item}>
                   <View style = {styles.leftBox}>
