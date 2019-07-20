@@ -24,7 +24,7 @@ export default class BudgetSetting extends Component {
         this.budget = firebase.firestore().collection('budget');
         this.trans = firebase.firestore().collection('trans');
         this.checkbox = null;
-        this.unsubscribe = null;
+        this.unsubscribe_categories = null;
         this.unsubscribe_trans = null;
         this.state = {
             categories: [],
@@ -191,7 +191,7 @@ export default class BudgetSetting extends Component {
           title: this.state.title,
           amount: parseFloat(this.state.amount),
           categories: this.state.selected,
-          currAmount: this.state.currAmount,
+          currAmount: 0,
         });
         this.setState({
           title: '',

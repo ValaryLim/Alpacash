@@ -27,59 +27,59 @@ import BudgetChart from '../components/BudgetChart.js'
 class BudgetScreen extends React.Component {
     constructor() {
         super();
-        this.ref = firebase.firestore().collection('budget');
-        this.unsubscribe = null;
+        this.ref = firebase.firestore().collection('expense_categories');
+        this.budget = firebase.firestore().collection('budget');
+        this.trans = firebase.firestore().collection('trans');
+        this.unsubscribe_categories = null;
+        this.unsubscribe_trans = null;
+        this.unsubscribe_budget = null;
         this.state = {
             budget:[],
+            categories: [],
+            trans: [],
+            currAmount: 0,
             alpacas: {'level1': 1},
             loading: true,
+            startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
         }
     }
 
     componentDidMount() {
-        this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate); 
-        if (moment().format('dddd') == "Monday") {
-            this.budget.forEach((budget) => {
-                // add alpaca if under budget 
-                this.resetBudget(budget.doc.id);
-            });
-        }
+        this.unsubscribe_categories= this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
+        this.unsubscribe_trans = this.trans.where('date', '>=', this.state.startWeek) 
+        .where('date', '<=', this.state.endWeek).onSnapshot(this.onTransUpdate);
+        this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
+        this.state.budget.forEach((budget) => { 
+            this.updateCurrentAmount(budget);
+        });
       }
     
     componentWillUnmount() {
-        this.unsubscribe();
+        this.unsubscribe_categories();
+        this.unsubscribe_trans();
+        this.unsubscribe_budget();
     }
 
-    onCollectionUpdate = (querySnapshot) => {
-        const budget = [];
-        querySnapshot.forEach((doc) => {
-          const { amount, currAmount } = doc.data();
-          
-          budget.push({
-            key: doc.id,
-            doc, // DocumentSnapshot
-            amount,
-            currAmount
-          });
+    updateCurrentAmount(budgetItem) {
+        this.state.trans.forEach((transaction) => {
+            budgetItem.categories.forEach((cat) => {
+                if (transaction.category == cat) {
+                    this.state.currAmount += parseInt(transaction.amount);
+                }
+            })
         });
 
-        this.setState({ 
-          budget, 
-          loading: false
-       });
-    }
-
-    resetBudget(docId) {
         firebase.firestore().runTransaction(async transaction => {
-            const doc = await transaction.get(this.ref.doc(docId));
+            const doc = await transaction.get(this.budget.doc(budgetItem.doc.id));
             if (!doc.exists) {
-              transaction.set(this.budget.doc(docId), { currAmount: 0 });
+              transaction.set(this.budget.doc(budgetItem.doc.id), { currAmount: 0 });
               return 0;
             }
     
-              const newAmount = 0;
+              const newAmount = this.state.currAmount;
     
-            transaction.update(this.budget.doc(docId), {
+            transaction.update(this.budget.doc(budgetItem.doc.id), {
               currAmount: newAmount,
             });
             return newAmount;
@@ -87,7 +87,71 @@ class BudgetScreen extends React.Component {
           .catch(error => {
             console.log('Transaction failed: ', error);
           });
+
+          this.setState({
+              currAmount: 0
+          })
     }
+
+    onCollectionUpdate = (querySnapshot) => {
+        const categories = [];
+        querySnapshot.forEach((doc) => {
+          const { id, title, checked, color } = doc.data();
+          
+          categories.push({
+            key: doc.id,
+            doc, // DocumentSnapshot
+            id,
+            title,
+            checked,
+            color
+          });
+        });
+        this.setState({ 
+          categories,
+          loading: false
+       });
+    }
+
+    onTransUpdate = (querySnapshot) => {
+      const trans = [];
+      querySnapshot.forEach((doc) => {
+        const { date, amount, category} = doc.data();
+        
+        trans.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          amount,
+          category,
+          date
+        });
+      });
+      this.setState({ 
+        trans,
+        loading: false
+     });
+  }
+
+  onBudgetUpdate = (querySnapshot) => {
+    const budget = [];
+    querySnapshot.forEach((doc) => {
+      const { amount, categories, currAmount, title} = doc.data();
+      
+      budget.push({
+        key: doc.id,
+        doc, // DocumentSnapshot
+        amount,
+        categories,
+        currAmount,
+        title
+      });
+    });
+    this.setState({ 
+      budget,
+      loading: false
+   });
+}
+
 
     render() {
         var renderAlpacas = [];
