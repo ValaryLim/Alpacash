@@ -114,23 +114,23 @@ class BudgetScreen extends React.Component {
     }
 
     onTransUpdate = (querySnapshot) => {
-      const trans = [];
-      querySnapshot.forEach((doc) => {
-        const { date, amount, category} = doc.data();
-        
-        trans.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          amount,
-          category,
-          date
+        const trans = [];
+        querySnapshot.forEach((doc) => {
+            const { date, amount, category} = doc.data();
+            
+            trans.push({
+            key: doc.id,
+            doc, // DocumentSnapshot
+            amount,
+            category,
+            date
+            });
         });
-      });
-      this.setState({ 
-        trans,
-        loading: false
-     });
-  }
+        this.setState({ 
+            trans,
+            loading: false
+        });
+    }
 
   onBudgetUpdate = (querySnapshot) => {
     const budget = [];
