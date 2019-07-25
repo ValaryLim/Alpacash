@@ -95,9 +95,6 @@ class BudgetScreen extends React.Component {
                 <View style = {styles.alpacaContainer} >
                     <MovableAlpaca/>
                     <MovableAlpaca/>
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
                 </View>
                 <View style = {styles.navigationContainer}>
                     <Icon 

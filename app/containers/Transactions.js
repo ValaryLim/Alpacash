@@ -38,6 +38,8 @@ export default class Transactions extends Component {
       this.ref = firebase.firestore().collection('trans');
       this.balance = firebase.firestore().collection('trans').doc('balance');
       this.budget = firebase.firestore().collection('budget');
+      this.expense_categories = firebase.firestore().collection('expense_categories');
+      this.income_categories = firebase.firestore().collection('income_categories');
       this.currBalance = null;
       this.unsubscribe = null;
       this.state = {
@@ -53,6 +55,8 @@ export default class Transactions extends Component {
         loading: true,
         trans: [],
         budget: [],
+        expenseCategories: [],
+        incomeCategories: [],
         headerDate: moment().startOf('isoWeek').format("YYYY-MM-DD"),
         startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
         endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD")
@@ -64,6 +68,8 @@ export default class Transactions extends Component {
         .where('date', '>=', this.state.startWeek) 
         .where('date', '<=', this.state.endWeek).onSnapshot(this.onCollectionUpdate);
       this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
+      this.unsubscribe_expense_categories = this.expense_categories.onSnapshot(this.onExCategoriesUpdate);
+      this.unsubscribe_income_categoires = this.income_categories.onSnapshot(this.onInCategoriesUpdate);
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
         this.setState ({
@@ -75,6 +81,7 @@ export default class Transactions extends Component {
     componentWillUnmount() {
       this.unsubscribe();
       this.unsubscribe_budget();
+      this.unsubscribe_categories();
     }
     
     onSelectingDate(date) {
@@ -131,6 +138,46 @@ export default class Transactions extends Component {
         loading: false,
      });
     }
+
+    onExCategoriesUpdate = (querySnapshot) => {
+      const expenseCategories = [];
+      querySnapshot.forEach((doc) => {
+        const { id, title, checked, color } = doc.data();
+        
+        expenseCategories.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          id,
+          title,
+          checked,
+          color
+        });
+      });
+      this.setState({ 
+        expenseCategories,
+        loading: false
+     });
+  }
+
+  onInCategoriesUpdate = (querySnapshot) => {
+    const incomeCategories = [];
+    querySnapshot.forEach((doc) => {
+      const { id, title, checked, color } = doc.data();
+      
+      incomeCategories.push({
+        key: doc.id,
+        doc, // DocumentSnapshot
+        id,
+        title,
+        checked,
+        color
+      });
+    });
+    this.setState({ 
+      incomeCategories,
+      loading: false
+   });
+}
     
     updateBalance(amount, type) {
       firebase.firestore().runTransaction(async transaction => {
@@ -336,12 +383,8 @@ export default class Transactions extends Component {
                               mode="dropdown"
                               placeholder="Category"
                               selectedValue={this.state.category}
-                              onValueChange={(value) => this.updateTransactionCategory(value)}>                
-                                <OptionPicker.Item label="   Food" value="Food" />
-                                <OptionPicker.Item label="   Shopping" value="Shopping"/>
-                                <OptionPicker.Item label="   Entertainment" value ="Entertainment"/>
-                                <OptionPicker.Item label="   Transport" value ="Transport"/>
-                                <OptionPicker.Item label="   Utilities" value ="Utilities"/> 
+                              onValueChange={(value) => this.updateTransactionCategory(value)}>   
+                                {this.state.expenseCategories.map((cat) => { return (<OptionPicker.Item key = {cat.id} label={'  ' + cat.title} value={cat.title} />);})}
                               </OptionPicker> ) : 
                               (
                                 <OptionPicker
@@ -349,8 +392,7 @@ export default class Transactions extends Component {
                                   placeholder="Category"
                                   selectedValue={this.state.category}
                                   onValueChange={(value) => this.updateTransactionCategory(value)}>                
-                                <OptionPicker.Item label="   Work" value="Work" />
-                                <OptionPicker.Item label="   Allowance" value="Allowance"/>
+                                  {this.state.incomeCategories.map((cat) => { return (<OptionPicker.Item key = {cat.id} label={'  ' + cat.title} value={cat.title} />);})}
                               </OptionPicker>
                               )}
                           </Item>
