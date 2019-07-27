@@ -51,54 +51,52 @@ export default class BudgetSetting extends Component {
     }
     
 
-      updateBudgetTitle(title) {
+    updateBudgetTitle(title) {
         this.setState({title: title})
-      }
+    }
 
-      updateBudgetAmount(amount) {
+    updateBudgetAmount(amount) {
         this.setState({amount: amount})
-      }
+    }
 
-      updateSelectedCategories() {
+    updateSelectedCategories() {
         this.state.categories.forEach((cat) => {
-          if (cat.checked) {
-            this.state.selected.push(cat.title);
-          }
+            if (cat.checked) {
+              this.state.selected.push(cat.title);
+            }
         });
-      }
+    }
 
-      updateCurrentAmount() {
+    updateCurrentAmount() {
         this.state.selected.forEach((sel) => { 
-          this.state.trans.forEach((trans) => {
-            if (trans.category == sel) {
-              this.state.currAmount += parseInt(trans.amount);
-          }
-      });
-      });
+            this.state.trans.forEach((trans) => {
+                if (trans.category == sel) {
+                    this.state.currAmount += parseInt(trans.amount);
+                }   
+            });
+        });
     }    
 
-      addBudget() {
+    addBudget() {
         this.budget.add({
-          title: this.state.title,
-          amount: parseFloat(this.state.amount),
-          categories: this.state.selected,
-          currAmount: this.state.currAmount,
+            title: this.state.title,
+            amount: parseFloat(this.state.amount),
+            categories: this.state.selected,
+            currAmount: this.state.currAmount,
         });
         this.setState({
-          title: '',
-          amount: '',
-          selected: [],
+            title: '',
+            amount: '',
+            selected: [],
         })
-      }
+    }
 
-      confirmBudget() {
+    confirmBudget() {
         this.updateSelectedCategories();
         this.updateCurrentAmount();
         this.addBudget();
         this.props.navigation.navigate('Budget');
-      }
-
-      
+    }  
 
     onCollectionUpdate = (querySnapshot) => {
         const categories = [];
