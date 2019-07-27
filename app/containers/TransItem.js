@@ -144,8 +144,8 @@ export default class TransItem extends React.PureComponent {
     deleteButton(amount, type, id, category, date) {
         this.updateBalanceWhenDelete(amount, type, date);
         if (type == 'expenditure' && 
-              date <= this.state.startWeek &&
-              date >= this.state.endWeek) {
+              date >= this.state.startWeek &&
+              date <= this.state.endWeek) {
           this.updateBudget(amount, category)
         }
         this.deleteTrans(id);

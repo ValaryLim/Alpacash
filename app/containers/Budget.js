@@ -15,49 +15,56 @@ import { Icon } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import moment from 'moment';
-import Gestures from 'react-native-easy-gestures';
+import Modal from 'react-native-modal';
 import * as Progress from 'react-native-progress';
 
 import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
+import { declareExportAllDeclaration } from "@babel/types";
 
 
 
-class BudgetScreen extends React.Component {
+export default class BudgetScreen extends Component {
     constructor() {
         super();
-        this.ref = firebase.firestore().collection('budget');
-        this.unsubscribe = null;
+        this.budget = firebase.firestore().collection('budget');
+        this.trans = firebase.firestore().collection('trans');
+        this.unsubscribe_budget = null;
+        this.unsubscribe_trans = null;
         this.state = {
-            budget:[],
+            isModalVisible: false,
+            trans: [],
             loading: true,
+            budgetAmount: [],
+            startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD")
         }
     }
 
     componentDidMount() {
-        this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate); 
-        if (moment().format('dddd') == "Monday") {
-            this.budget.forEach((budget) => {
-                this.resetBudget(budget.doc.id);
-            });
-        }
+        this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate); 
+        this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
       }
     
     componentWillUnmount() {
-        this.unsubscribe();
+        this.unsubscribe_budget();
+        this.unsubscribe_trans();
     }
 
-    onCollectionUpdate = (querySnapshot) => {
+    onBudgetUpdate = (querySnapshot) => {
         const budget = [];
         querySnapshot.forEach((doc) => {
-          const { amount, currAmount } = doc.data();
+          const { title, amount, categories, currAmount, lastUpdate } = doc.data();
           
           budget.push({
             key: doc.id,
             doc, // DocumentSnapshot
+            title,
             amount,
-            currAmount
+            categories,
+            currAmount,
+            lastUpdate
           });
         });
 
@@ -67,28 +74,39 @@ class BudgetScreen extends React.Component {
        });
     }
 
-    resetBudget(docId) {
-        firebase.firestore().runTransaction(async transaction => {
-            const doc = await transaction.get(this.ref.doc(docId));
-            if (!doc.exists) {
-              transaction.set(this.budget.doc(docId), { currAmount: 0 });
-              return 0;
-            }
+    onTransUpdate = (querySnapshot) => {
+      const trans = [];
+      querySnapshot.forEach((doc) => {
+        const { title, amount, category, date, type } = doc.data();
+        
+        trans.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          amount,
+          category,
+          date,
+          type
+          
+        });
+      });
     
-              const newAmount = 0;
-    
-            transaction.update(this.budget.doc(docId), {
-              currAmount: newAmount,
-            });
-            return newAmount;
-          })
-          .catch(error => {
-            console.log('Transaction failed: ', error);
-          });
+      this.setState({ 
+        trans,
+        loading: false,
+     });
     }
+
+    toggleModal = () => {
+      this.setState({ isModalVisible: !this.state.isModalVisible });
+    }
+
     render() {
         return (
             <View style = {styles.container}>
+                <Modal isVisible = {this.state.isModalVisible}>
+                  <BudgetSetting toggleModalChild = {this.toggleModal}/>
+                </Modal>
                 <View style = {styles.progressContainer}>
                     <BudgetChart/>
                 </View>
@@ -102,30 +120,12 @@ class BudgetScreen extends React.Component {
                         type='material'
                         color='#fff'
                         size={45}
-                        onPress={() => this.props.navigation.navigate('BudgetSetting')} />
+                        onPress={() => this.toggleModal()} />
                         
                 </View>
                 </View>
             
         );
-    }
-}
-
-const RootStack = createStackNavigator(
-    {
-      Budget: BudgetScreen,
-      BudgetSetting: BudgetSetting,
-    },
-    {
-      initialRouteName: 'Budget',
-    }
-);
-  
-const AppContainer = createAppContainer(RootStack);
-
-export default class Budget extends React.Component {
-    render() {
-      return <AppContainer />;
     }
 }
 
