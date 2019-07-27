@@ -129,27 +129,6 @@ export default class BudgetScreen extends Component {
     }
 }
 
-<<<<<<< HEAD
-=======
-const RootStack = createStackNavigator(
-    {
-      Budget: BudgetScreen,
-      BudgetSetting: BudgetSetting,
-    },
-    {
-      initialRouteName: 'Budget',
-    }
-);
-  
-const AppContainer = createAppContainer(RootStack);
-
-export default class Budget extends React.Component {
-    render() {
-      return <AppContainer />;
-    }
-}
-
->>>>>>> master
 /**
  * StyleSheet
  */

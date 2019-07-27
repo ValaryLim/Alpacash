@@ -46,69 +46,12 @@ export default class BudgetSetting extends Component {
           .where('date', '<=', this.state.endWeek).onSnapshot(this.onTransUpdate);
       }
     
-<<<<<<< HEAD
       componentWillUnmount() {
           this.unsubscribe_categories();
           this.unsubscribe_trans();
       }
 
       onCollectionUpdate = (querySnapshot) => {
-=======
-    componentWillUnmount() {
-        this.unsubscribe_categories();
-        this.unsubscribe_trans();
-    }
-    
-
-    updateBudgetTitle(title) {
-        this.setState({title: title})
-    }
-
-    updateBudgetAmount(amount) {
-        this.setState({amount: amount})
-    }
-
-    updateSelectedCategories() {
-        this.state.categories.forEach((cat) => {
-            if (cat.checked) {
-              this.state.selected.push(cat.title);
-            }
-        });
-    }
-
-    updateCurrentAmount() {
-        this.state.selected.forEach((sel) => { 
-            this.state.trans.forEach((trans) => {
-                if (trans.category == sel) {
-                    this.state.currAmount += parseInt(trans.amount);
-                }   
-            });
-        });
-    }    
-
-    addBudget() {
-        this.budget.add({
-            title: this.state.title,
-            amount: parseFloat(this.state.amount),
-            categories: this.state.selected,
-            currAmount: this.state.currAmount,
-        });
-        this.setState({
-            title: '',
-            amount: '',
-            selected: [],
-        })
-    }
-
-    confirmBudget() {
-        this.updateSelectedCategories();
-        this.updateCurrentAmount();
-        this.addBudget();
-        this.props.navigation.navigate('Budget');
-    }  
-
-    onCollectionUpdate = (querySnapshot) => {
->>>>>>> master
         const categories = [];
         querySnapshot.forEach((doc) => {
           const { id, title, checked, color } = doc.data();
