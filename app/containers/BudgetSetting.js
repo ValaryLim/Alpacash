@@ -24,7 +24,7 @@ export default class BudgetSetting extends Component {
         this.budget = firebase.firestore().collection('budget');
         this.trans = firebase.firestore().collection('trans');
         this.checkbox = null;
-        this.unsubscribe = null;
+        this.unsubscribe_categories = null;
         this.unsubscribe_trans = null;
         this.state = {
             categories: [],
@@ -32,75 +32,26 @@ export default class BudgetSetting extends Component {
             loading: true,
             title: '',
             amount: '',
-            startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
-            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
             selected: [],
             currAmount: 0,
+            lastUpdate: moment().format("YYYY-MM-DD"),
+            startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
         };
     }
 
-    componentDidMount() {
-        this.unsubscribe_categories= this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
-        this.unsubscribe_trans = this.trans.where('date', '>=', this.state.startWeek) 
-        .where('date', '<=', this.state.endWeek).onSnapshot(this.onTransUpdate);
+      componentDidMount() {
+          this.unsubscribe_categories= this.ref.orderBy('id').onSnapshot(this.onCollectionUpdate);
+          this.unsubscribe_trans = this.trans.where('date', '>=', this.state.startWeek) 
+          .where('date', '<=', this.state.endWeek).onSnapshot(this.onTransUpdate);
       }
     
-    componentWillUnmount() {
-        this.unsubscribe_categories();
-        this.unsubscribe_trans();
-    }
-    
-
-      updateBudgetTitle(title) {
-        this.setState({title: title})
+      componentWillUnmount() {
+          this.unsubscribe_categories();
+          this.unsubscribe_trans();
       }
 
-      updateBudgetAmount(amount) {
-        this.setState({amount: amount})
-      }
-
-      updateSelectedCategories() {
-        this.state.categories.forEach((cat) => {
-          if (cat.checked) {
-            this.state.selected.push(cat.title);
-          }
-        });
-      }
-
-      updateCurrentAmount() {
-        this.state.selected.forEach((sel) => { 
-          this.state.trans.forEach((trans) => {
-            if (trans.category == sel) {
-              this.state.currAmount += parseInt(trans.amount);
-          }
-      });
-      });
-    }    
-
-      addBudget() {
-        this.budget.add({
-          title: this.state.title,
-          amount: parseFloat(this.state.amount),
-          categories: this.state.selected,
-          currAmount: this.state.currAmount,
-        });
-        this.setState({
-          title: '',
-          amount: '',
-          selected: [],
-        })
-      }
-
-      confirmBudget() {
-        this.updateSelectedCategories();
-        this.updateCurrentAmount();
-        this.addBudget();
-        this.props.navigation.navigate('Budget');
-      }
-
-      
-
-    onCollectionUpdate = (querySnapshot) => {
+      onCollectionUpdate = (querySnapshot) => {
         const categories = [];
         querySnapshot.forEach((doc) => {
           const { id, title, checked, color } = doc.data();
@@ -118,26 +69,79 @@ export default class BudgetSetting extends Component {
           categories,
           loading: false
        });
-    }
+      
+      }
 
-    onTransUpdate = (querySnapshot) => {
-      const trans = [];
-      querySnapshot.forEach((doc) => {
-        const { date, amount, category} = doc.data();
-        
-        trans.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          amount,
-          category,
-          date
+      onTransUpdate = (querySnapshot) => {
+        const trans = [];
+        querySnapshot.forEach((doc) => {
+          const { title, amount, category, date, type } = doc.data();
+          
+          trans.push({
+            key: doc.id,
+            doc, // DocumentSnapshot
+            title,
+            amount,
+            category,
+            date,
+            type
+            
+          });
         });
+      
+        this.setState({ 
+          trans,
+          loading: false,
       });
-      this.setState({ 
-        trans,
-        loading: false
-     });
-  }
+      }
+    
+      updateBudgetTitle(title) {
+        this.setState({title: title})
+      }
+
+      updateBudgetAmount(amount) {
+          this.setState({amount: amount})
+      }
+
+      updateSelectedCategories() {
+        this.state.categories.forEach((cat) => {
+          if (cat.checked) {
+            this.state.selected.push(cat.title);
+          }
+        });
+      }
+
+      addBudget() {
+        this.budget.add({
+          title: this.state.title,
+          amount: parseFloat(this.state.amount),
+          categories: this.state.selected,
+          currAmount: this.state.currAmount,
+          lastUpdate: this.state.lastUpdate
+        });
+        this.setState({
+          title: '',
+          amount: '',
+          selected: [],
+        })
+      }
+
+      updateCurrentAmount() {
+        this.state.trans.forEach((trans) => {
+          this.state.selected.forEach((sel) => {
+            if (trans.category == sel) {
+              this.state.currAmount += parseFloat(trans.amount);
+            }
+          })
+        })
+      }
+
+      confirmBudget() {
+        this.updateSelectedCategories();
+        this.updateCurrentAmount();
+        this.addBudget();
+        this.props.toggleModalChild();
+      }
 
     toggleCheckbox(id) {
       this.checkbox = this.ref.doc(id);
@@ -159,56 +163,7 @@ export default class BudgetSetting extends Component {
           console.log('Transaction failed: ', error);
         });
     }
-    
-
-      updateBudgetTitle(title) {
-        this.setState({title: title})
-      }
-
-      updateBudgetAmount(amount) {
-        this.setState({amount: amount})
-      }
-
-      updateSelectedCategories() {
-        this.state.categories.forEach((cat) => {
-          if (cat.checked) {
-            this.state.selected.push(cat.title);
-          }
-        });
-      }
-
-      updateCurrentAmount() {
-        this.state.selected.forEach((sel) => { 
-          this.state.trans.forEach((trans) => {
-            if (trans.category == sel)
-              this.state.currAmount += parseInt(trans.amount);
-          })
-      });
-      }    
-
-      addBudget() {
-        this.budget.add({
-          title: this.state.title,
-          amount: parseFloat(this.state.amount),
-          categories: this.state.selected,
-          currAmount: this.state.currAmount,
-        });
-        this.setState({
-          title: '',
-          amount: '',
-          selected: [],
-        })
-      }
-
-      confirmBudget() {
-        this.updateSelectedCategories();
-        this.updateCurrentAmount();
-        this.addBudget();
-        this.props.navigation.navigate('Budget');
-      }
-
-      
-
+  
     render() {
         return (
             <View style = {styles.container}>
@@ -254,7 +209,7 @@ export default class BudgetSetting extends Component {
                   </Button>
                   <Button rounded danger
                     style = {styles.confirmButton}
-                    onPress = {() => this.props.navigation.navigate('Budget')}>
+                    onPress = {() => this.props.toggleModalChild()}>
                       <Text> Delete </Text>
                   </Button>
                 </View>
