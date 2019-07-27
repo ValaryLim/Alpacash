@@ -119,7 +119,7 @@ const RootStack = createStackNavigator(
     {
       initialRouteName: 'Budget',
     }
-  );
+);
   
 const AppContainer = createAppContainer(RootStack);
 
