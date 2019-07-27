@@ -5,6 +5,7 @@ import {
 } from "victory-native";
 import { Svg, G } from "react-native-svg";
 import firebase from 'react-native-firebase';
+import moment from 'moment';
 
 export default class StatisticsExpense extends React.Component {
     constructor() {
@@ -18,12 +19,16 @@ export default class StatisticsExpense extends React.Component {
             loading_data: true,
             data: [],
             loading_colors: true,
-            colors: []
+            colors: [],
+            startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD")
         }
     }
 
     componentDidMount() {
-        this.unsubscribe_data = this.trans.onSnapshot(this.onCollectionUpdate);
+        this.unsubscribe_data = this.trans
+            .where('date', '>=', this.state.startWeek).where('date', '<=', this.state.endWeek)
+            .onSnapshot(this.onCollectionUpdate);
         this.unsubscribe_colors = this.expense_categories.onSnapshot(this.onColorUpdate);
     }
 

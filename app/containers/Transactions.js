@@ -40,6 +40,10 @@ export default class Transactions extends Component {
       this.budget = firebase.firestore().collection('budget');
       this.expense_categories = firebase.firestore().collection('expense_categories');
       this.income_categories = firebase.firestore().collection('income_categories');
+<<<<<<< HEAD
+=======
+      this.currBalance = null;
+>>>>>>> master
       this.unsubscribe = null;
       this.unsubscribe_budget = null;
       this.unsubscribe_expense_categories = null;
@@ -72,7 +76,11 @@ export default class Transactions extends Component {
         .where('date', '<=', this.state.endWeek).onSnapshot(this.onCollectionUpdate);
       this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate);
       this.unsubscribe_expense_categories = this.expense_categories.onSnapshot(this.onExCategoriesUpdate);
+<<<<<<< HEAD
       this.unsubscribe_income_categories = this.income_categories.onSnapshot(this.onInCategoriesUpdate);
+=======
+      this.unsubscribe_income_categoires = this.income_categories.onSnapshot(this.onInCategoriesUpdate);
+>>>>>>> master
       this.balance.onSnapshot((doc) => {
         const { total } = doc.data()
         this.setState ({
@@ -85,8 +93,11 @@ export default class Transactions extends Component {
       this.unsubscribe();
       this.unsubscribe_budget();
       this.unsubscribe_categories();
+<<<<<<< HEAD
       this.unsubscribe_expense_categories();
       this.unsubscribe_income_categories();
+=======
+>>>>>>> master
     }
     
     onSelectingDate(date) {
@@ -162,9 +173,15 @@ export default class Transactions extends Component {
         expenseCategories,
         loading: false
      });
+<<<<<<< HEAD
     }
 
     onInCategoriesUpdate = (querySnapshot) => {
+=======
+  }
+
+  onInCategoriesUpdate = (querySnapshot) => {
+>>>>>>> master
     const incomeCategories = [];
     querySnapshot.forEach((doc) => {
       const { id, title, checked, color } = doc.data();
@@ -182,7 +199,11 @@ export default class Transactions extends Component {
       incomeCategories,
       loading: false
    });
+<<<<<<< HEAD
     }
+=======
+}
+>>>>>>> master
     
     updateBalance(amount, type) {
       firebase.firestore().runTransaction(async transaction => {
