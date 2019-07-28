@@ -35,6 +35,8 @@ A step by step guide to get a development and testing environment running.
 * Add transactions split by income/expenditure and categories
 * Delete transactions
 * Automatic balance calculation
+
+#### 
 ![](readme_images/transactions.gif)
 
 ### Budget
