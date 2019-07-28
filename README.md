@@ -1,5 +1,5 @@
 # Alpacash
-![](readme_images/main_alpaca.png)
+![](readme_images/main_alpaca.png = 200 x 200)
 
 Testing Alpacash
 ------
