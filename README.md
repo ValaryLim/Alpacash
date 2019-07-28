@@ -1,5 +1,5 @@
 # Alpacash
-![](readme_images/main_alpaca.png = 200 x 200)
+![](readme_images/main_alpaca.png){:height="250px" width="250px"}
 
 Testing Alpacash
 ------
