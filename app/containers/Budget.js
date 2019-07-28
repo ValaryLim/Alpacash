@@ -130,6 +130,34 @@ export default class BudgetScreen extends Component {
       });
     }
 
+    refreshBudget() {
+      this.state.budget.forEach((bud) => {
+        alert(bud.lastUpdate);
+        if (bud.lastUpdate < this.state.startWeek) {
+          this.updateCurrentAmount(bud.doc.id);
+        }
+      })
+    }
+
+    updateCurrentAmount(docId) {
+      firebase.firestore().runTransaction(async transaction => {
+        const doc = await transaction.get(this.budget.doc(docId));
+        if (!doc.exists) {
+          transaction.set(this.budget.doc(docId), { currAmount: 0 });
+          return 0;
+        }
+
+        transaction.update(this.budget.doc(docId), {
+          currAmount: 0,
+          lastUpdate: moment().format("YYYY-MM-DD")
+        });
+        return 0;
+      })
+      .catch(error => {
+        console.log('Transaction failed: ', error);
+      });
+    }
+
     toggleModal = () => {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     }
