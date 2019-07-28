@@ -9,17 +9,15 @@ import {
 } from "react-native";
 
 
-
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view-forked'
 import firebase from 'react-native-firebase';
+
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Icon as AddIcon} from 'react-native-elements';
 import Modal from 'react-native-modal';
 
 import CreateCategoryEx from "../components/CreateCategoryEx.js";
 import CreateCategoryIn from "../components/CreateCategoryIn.js";
-
-
 
 export default class EditCategories extends Component {
     constructor() {
@@ -158,7 +156,6 @@ export default class EditCategories extends Component {
                 })}
             </ScrollView>
           </ScrollableTabView>
-
         );
     }
 }
