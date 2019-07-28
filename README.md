@@ -1,5 +1,5 @@
-# Alpacash
 <p align = "center">
+    <h1>Alpacash</h1>
     <img src="readme_images/main_alpaca.png" width="250" height="250" title="Alpacash">
 </p>
 
