@@ -6,7 +6,7 @@ import {
     ScrollView
 } from "react-native";
 import { CheckBox, Text} from 'react-native-elements';
-import {Button} from 'native-base';
+import { Button } from 'native-base';
 import firebase from 'react-native-firebase';
 import moment from 'moment';
 import { createStackNavigator, createAppContainer } from 'react-navigation';

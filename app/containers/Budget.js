@@ -22,6 +22,7 @@ import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
 import { declareExportAllDeclaration } from "@babel/types";
+import Achievements from "./Achievements";
 
 
 
@@ -37,19 +38,24 @@ export default class BudgetScreen extends Component {
             budget: [],
             loading: true,
             startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
-            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD")
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
+            alpacas: []
         }
     }
 
     componentDidMount() {
         this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate); 
         this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
+        
+        // Add one initial level 1 alpacas
+        this.addAlpaca(1);
       }
     
     componentWillUnmount() {
         this.unsubscribe_budget();
         this.unsubscribe_trans();
     }
+
 
     onBudgetUpdate = (querySnapshot) => {
         const budget = [];
@@ -75,35 +81,59 @@ export default class BudgetScreen extends Component {
     }
 
     onTransUpdate = (querySnapshot) => {
-      const trans = [];
-      querySnapshot.forEach((doc) => {
+        const trans = [];
+        querySnapshot.forEach((doc) => {
         const { title, amount, category, date, type } = doc.data();
-        
-        trans.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          title,
-          amount,
-          category,
-          date,
-          type
           
+        trans.push({
+            key: doc.id,
+            doc, // DocumentSnapshot
+            title,
+            amount,
+            category,
+            date,
+            type
+            
         });
-      });
+    });
     
-      this.setState({ 
-        trans,
-        loading: false,
-     });
+        this.setState({ 
+            trans,
+            loading: false,
+        });
     }
 
     refreshBudget() {
       this.state.budget.forEach((bud) => {
         alert(bud.lastUpdate);
         if (bud.lastUpdate < this.state.startWeek) {
+          this.updateAlpacas(bud.currAmount, bud.amount);
           this.updateCurrentAmount(bud.doc.id);
         }
       })
+    }
+
+    updateAlpacas(curr, total) {
+      const percentage = curr/total; 
+      if(curr > total) {
+         this.addAlpaca(1);
+         Achievements.achievedLevel(1);
+       } else if (percentage > 0.8) {
+         this.addAlpaca(2);
+         Achievements.achievedLevel(2);
+       } else if (percentage > 0.6) {
+         this.addAlpaca(3);
+         Achievements.achievedLevel(3);
+       } else if (percentage > 0.4) {
+         this.addAlpaca(4);
+         Achievements.achievedLevel(4);
+       } else if (percentage > 0.2) {
+         this.addAlpaca(5);
+         Achievements.achievedLevel(5);
+       } else {
+         this.addAlpaca(6);
+         Achievements.achievedLevel(6);
+       }
     }
 
     updateCurrentAmount(docId) {
@@ -126,10 +156,24 @@ export default class BudgetScreen extends Component {
     }
 
     toggleModal = () => {
-      this.setState({ isModalVisible: !this.state.isModalVisible });
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    }
+
+    addAlpaca = (level) => {
+        this.state.alpacas.push({
+          'alpaca': new MovableAlpaca(),
+          'level': level
+        })
     }
 
     render() {
+        var renderAlpacas = [];
+        for (let i = 0; i < this.state.alpacas.length; i++) {
+            renderAlpacas.push(<MovableAlpaca key = {i} src = {this.state.alpacas[i].alpaca} 
+                level = {this.state.alpacas[i].level}
+                mergeAlpacaChild = {this.mergeAlpaca}/>)
+        };
+
         return (
             <View style = {styles.container}>
                 <Modal isVisible = {this.state.isModalVisible}>
@@ -139,8 +183,7 @@ export default class BudgetScreen extends Component {
                     <BudgetChart/>
                 </View>
                 <View style = {styles.alpacaContainer} >
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
+                    { renderAlpacas }
                 </View>
                 <View style = {styles.navigationContainer}>
                     <Icon 
@@ -155,7 +198,7 @@ export default class BudgetScreen extends Component {
             
         );
     }
-}
+  }
 
 /**
  * StyleSheet
