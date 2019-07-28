@@ -1,4 +1,5 @@
 # Alpacash
+![Alpacash]("./app/assets/images/achievements/achieved/alpaca5_achieved.png")
 
 Testing Alpacash
 ------
@@ -15,3 +16,15 @@ Testing Alpacash
 5. Run "npm install"
 6. Run "react-native link"
 7. Run "react-native run-android"
+
+Features
+------
+### Transactions
+1. Add, delete and edit transactions
+
+### Budget
+1. Create weekly budgets
+
+### Statistics
+
+### Settings
