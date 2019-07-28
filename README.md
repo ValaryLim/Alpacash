@@ -31,7 +31,7 @@ A step by step guide to get a development and testing environment running.
 
 ## Summary of Features
 ### Transactions
-* Scroll through transactions weekly
+* Scroll through transactions weekly and by day
 * Add transactions split by income/expenditure and categories
 * Delete transactions
 * Automatic balance calculation
@@ -40,11 +40,30 @@ A step by step guide to get a development and testing environment running.
 ![](readme_images/transactions.gif)
 
 ### Budget
-1. Create weekly budgets
+* Create weekly budgets (set title and categories to count into budget)
+* Display progress bar based on percentage of weekly budget spent
+* Delete budgets
+#### 
+![](readme_images/budget.gif)
+
+* Earn alpacas of different levels depending on percentage of budget spent (the higher the percentage, the higher the level)
+* View your alpacas and have fun dragging them around
+#### 
+![](readme_images/drag_alpacas.gif)
 
 ### Statistics
+View expenditure and income for the week, broken down into different categories
+![](readme_images/statistics.gif)
 
-### Settings
+### Settings - Achievements Page
+View all alpacas collected and collect them all!
+![](readme_images/achievements.gif)
+
+### Settings - Edit Categories
+* Create new categories (name, icon)
+* Delete unwanted categories
+#### 
+![](readme_images/edit_categories.gif)
 
 ## Additions or Bugs Squashed from Milestone 2 to 3
 * Users can now collect a variety of alpacas (earned based on how much they save weekly) and view these alpacas in the achievements page found in Settings
