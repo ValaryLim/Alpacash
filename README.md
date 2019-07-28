@@ -1,5 +1,5 @@
 # Alpacash
-![Alpacash](https://drive.google.com/file/d/1ufM28HZL-wPTBhx11ZcIUfks4b-mzbhP/view?usp=sharing)
+![](readme_images/main_alpaca.png)
 
 Testing Alpacash
 ------
