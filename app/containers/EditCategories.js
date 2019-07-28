@@ -16,7 +16,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Icon as AddIcon} from 'react-native-elements';
 import Modal from 'react-native-modal';
 
-import CreateCategory from "../components/CreateCategory";
+import CreateCategoryEx from "../components/CreateCategory";
+import CreateCategoryIn from "../components/CreateCategory";
 
 
 
@@ -29,7 +30,8 @@ export default class EditCategories extends Component {
         this.unsubscribe_income_categories = null;
         this.state = {
             loading: true,
-            isModalVisible: false,
+            isExModalVisible: false,
+            isInModalVisible: false,
             expenseCategories: [],
             incomeCategories: [],
         }
@@ -106,8 +108,12 @@ export default class EditCategories extends Component {
         return icon;
     }
 
-    toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible });
+    toggleModalEx = () => {
+        this.setState({ isExModalVisible: !this.state.isExModalVisible });
+    }
+
+    toggleModalIn = () => {
+        this.setState({ isInModalVisible: !this.state.isInModalVisible });
     }
 
     render() {
@@ -117,10 +123,10 @@ export default class EditCategories extends Component {
             renderTabBar={() => <DefaultTabBar backgroundColor='rgba(255, 255, 255, 0.7)'/>}
           >
             <ScrollView tabLabel='Expenditure'>
-            <Modal isVisible = {this.state.isModalVisible}>
-                  <CreateCategory toggleModalChild = {this.toggleModal}/>
+            <Modal isVisible = {this.state.isExModalVisible}>
+                  <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
             </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModal()} />
+            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalEx()} />
             {this.state.expenseCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>
@@ -135,6 +141,10 @@ export default class EditCategories extends Component {
             </ScrollView>
             
             <ScrollView tabLabel='Income'>
+            <Modal isVisible = {this.state.isInModalVisible}>
+                  <CreateCategoryEx toggleModalChild = {this.toggleModalIn}/>
+            </Modal>
+            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalIn()} />
             {this.state.incomeCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>

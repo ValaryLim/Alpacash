@@ -5,6 +5,7 @@ import {
     View, 
     Text,
     TextInput,
+    TouchableOpacity
 } from "react-native";
 
 import { Button } from 'native-base';
@@ -14,30 +15,44 @@ import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
-
-
-export default class EditCategories extends Component {
+class CreateCategoryIn extends Component {
     constructor() {
         super();
-        this.expense_categories = firebase.firestore().collection('expense_categories');
         this.income_categories = firebase.firestore().collection('income_categories');
-        this.unsubscribe_expense_categories = null;
         this.unsubscribe_income_categories = null;
         this.state = {
             loading: true,
-            expenseCategories: [],
             incomeCategories: [],
+            id: 0,
+            iconName: '',
+            icons: [
+                {'id': 1, name: "ticket-alt"}, 
+                {'id': 2, name: "bolt"}, 
+                {'id': 3, name: "shopping-bag"}, 
+                {'id': 4, name: "bus"}, 
+                {'id': 5, name: "car"}, 
+                {'id': 6, name: "utensils"},
+                {'id': 7, name: "wallet"}, 
+                {'id': 8, name: "briefcase"},
+                {'id': 9, name: "home"},
+                {'id': 10, name: "tshirt"},
+                {'id': 11, name: "gift"}, 
+                {'id': 12, name: "book"},
+                {'id': 13, name: "heartbeat"},
+                {'id': 14, name: "desktop"},
+                {'id': 15, name: "dog"},
+                {'id': 16, name: "plane"},
+                {'id': 17, name: "coffee"},
+                {'id': 6, name: "beer"}],
             title: "",
         }
     }
 
     componentDidMount() {
-        this.unsubscribe_expense_categories = this.expense_categories.onSnapshot(this.onExCategoriesUpdate);
-        this.unsubscribe_income_categories = this.income_categories.onSnapshot(this.onInCategoriesUpdate);
+        this.unsubscribe_income_categories = this.income_categories.orderBy('id').onSnapshot(this.onInCategoriesUpdate);
     }
     
     componentWillUnmount() {
-        this.unsubscribe_expense_categories();
         this.unsubscribe_income_categories();
     }
 
@@ -51,8 +66,8 @@ export default class EditCategories extends Component {
             doc, // DocumentSnapshot
             id,
             title,
-            checked,
             icon,
+            checked,
             color
           });
         });
@@ -60,7 +75,118 @@ export default class EditCategories extends Component {
           incomeCategories,
           loading: false
        });
+       this.setState({
+           id: parseInt(incomeCategories[incomeCategories.length-1].id) + 1
+       })
+     }
+
+    updateCategoryTitle(title) {
+        this.setState({title: title})
+    }
+
+    updateIconName(name) {
+        this.setState({iconName: name})
+    }
+
+    confirmCategory() {
+        this.income_categories.add({
+            checked: false,
+            color: "#FFFFFF",
+            icon: this.state.iconName,
+            id: this.state.id,
+            title: this.state.title
+        }),
+        this.setState({
+            title: '',
+            id: this.state.id+1,
+            iconName: '',
+          })
+          this.props.toggleModalChild();
+    }
+
+    render() {
+        return(      
+          <View style = {styles.container}>
+              <View style = {styles.header}>
+                <TextInput style = {styles.categoryTitle}
+                    placeholder='Enter category title'
+                    placeholderTextColor = 'white'
+                    autoCapitalize = 'characters'
+                    underlineColorAndroid = 'transparent'
+                    onChangeText = {(text) => this.updateCategoryTitle(text)}
+                    maxLength = {20}
+                />
+                </View>
+                <View style = {styles.iconBox}>
+                    {this.state.icons.map((icon, index) => {return(
+                        <TouchableOpacity style = { styles.iconButton } onPress = {() => this.updateIconName(icon.name)}>
+                            <Icon 
+                                key = {icon.id}
+                                size = {10} 
+                                name={icon.name} 
+                                style = {styles.iconStyle}
+                            />
+                        </TouchableOpacity>
+                            )
+                    })}
+                </View>
+                <View style = {styles.footer}>
+                  <Button rounded success 
+                    style = {styles.confirmButton}
+                    onPress = {() => this.confirmCategory()}> 
+                    <Text> Confirm</Text>
+                  </Button>
+                  <Button rounded danger
+                    style = {styles.confirmButton}
+                    onPress = {() => this.props.toggleModalChild()}>
+                    <Text> Delete </Text>
+                  </Button>
+                </View>
+              </View>
+        );
+    }
+}
+
+
+export default class CreateCategoryEx extends Component {
+    constructor() {
+        super();
+        this.expense_categories = firebase.firestore().collection('expense_categories');
+        this.unsubscribe_expense_categories = null;
+        this.state = {
+            loading: true,
+            expenseCategories: [],
+            id: 0,
+            iconName: '',
+            icons: [
+                {'id': 1, name: "ticket-alt"}, 
+                {'id': 2, name: "bolt"}, 
+                {'id': 3, name: "shopping-bag"}, 
+                {'id': 4, name: "bus"}, 
+                {'id': 5, name: "car"}, 
+                {'id': 6, name: "utensils"},
+                {'id': 7, name: "wallet"}, 
+                {'id': 8, name: "briefcase"},
+                {'id': 9, name: "home"},
+                {'id': 10, name: "tshirt"},
+                {'id': 11, name: "gift"}, 
+                {'id': 12, name: "book"},
+                {'id': 13, name: "heartbeat"},
+                {'id': 14, name: "desktop"},
+                {'id': 15, name: "dog"},
+                {'id': 16, name: "plane"},
+                {'id': 17, name: "coffee"},
+                {'id': 6, name: "beer"}],
+            title: "",
+        }
+    }
+
+    componentDidMount() {
+        this.unsubscribe_expense_categories = this.expense_categories.orderBy('id').onSnapshot(this.onExCategoriesUpdate);
+    }
     
+    componentWillUnmount() {
+        this.unsubscribe_expense_categories();
     }
 
     onExCategoriesUpdate = (querySnapshot) => {
@@ -82,17 +208,40 @@ export default class EditCategories extends Component {
           expenseCategories,
           loading: false
        });
+       this.setState({
+           id: parseInt(expenseCategories[expenseCategories.length-1].id) + 1
+       })
      }
 
-     updateCategoryTitle(title) {
+    updateCategoryTitle(title) {
         this.setState({title: title})
-      }
+    }
+
+    updateIconName(name) {
+        this.setState({iconName: name})
+    }
+
+    confirmCategory() {
+        this.expense_categories.add({
+            checked: false,
+            color: "#FFFFFF",
+            icon: this.state.iconName,
+            id: this.state.id,
+            title: this.state.title
+        }),
+        this.setState({
+            title: '',
+            id: this.state.id+1,
+            iconName: '',
+          })
+          this.props.toggleModalChild();
+    }
 
     render() {
         return(      
           <View style = {styles.container}>
               <View style = {styles.header}>
-                <TextInput style = {styles.categorytitle}
+                <TextInput style = {styles.categoryTitle}
                     placeholder='Enter category title'
                     placeholderTextColor = 'white'
                     autoCapitalize = 'characters'
@@ -100,11 +249,24 @@ export default class EditCategories extends Component {
                     onChangeText = {(text) => this.updateCategoryTitle(text)}
                     maxLength = {20}
                 />
-              </View>
+                </View>
+                <View style = {styles.iconBox}>
+                    {this.state.icons.map((icon, index) => {return(
+                        <TouchableOpacity style = { styles.iconButton } onPress = {() => this.updateIconName(icon.name)}>
+                            <Icon 
+                                key = {icon.id}
+                                size = {10} 
+                                name={icon.name} 
+                                style = {styles.iconStyle}
+                            />
+                        </TouchableOpacity>
+                            )
+                    })}
+                </View>
                 <View style = {styles.footer}>
                   <Button rounded success 
                     style = {styles.confirmButton}
-                    onPress = {() => this.props.toggleModalChild()}> 
+                    onPress = {() => this.confirmCategory()}> 
                     <Text> Confirm</Text>
                   </Button>
                   <Button rounded danger
@@ -122,19 +284,10 @@ export default class EditCategories extends Component {
  * StyleSheet
  */
 const styles = StyleSheet.create({
-    separator: {
-        height: 30,
-        width: "100%"
-    },
-    main: {
+    container: {
         justifyContent: "center",
-        flex: 1,
-        margin: 10
-    },
-    button: {
-        padding: 10,
-        fontSize: 18,
-        height: 40
+        margin: 10,
+        height: "60%"
     },
     header: {
         backgroundColor: "#F66A73",
@@ -148,21 +301,31 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
       },
     item: {
-        height: 50,
+        height: 70,
         backgroundColor: "#fff",
         flexDirection: 'row',
         alignItems: 'center',
     },
     iconStyle: {
-        marginLeft: '10%',
-        color:"black",
-        width: '5%'
-     
+        color: "white",
+        width: "100%",
+        fontSize: 20,
+        marginLeft: 15,
     },
-    itemText: {
-        color: "black",
-        fontSize: 17,
-        marginLeft: '5%'
+    iconBox: {
+        flexDirection: 'row',
+        backgroundColor: "#F66A73",
+        flexWrap: 'wrap',
+        justifyContent: "center",
+        flex: 1,
+    },
+    iconButton: {
+        height: 50,
+        width: 50
+    },
+    categoryTitle: {
+        color: "white",
+        fontSize: 30,
     },
     confirmButton: {
         width: 100,
