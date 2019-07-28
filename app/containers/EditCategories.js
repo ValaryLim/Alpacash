@@ -5,7 +5,8 @@ import {
     View, 
     ScrollView,
     Text,
-    Button
+    Button,
+    TouchableOpacity
 } from "react-native";
 
 
@@ -13,7 +14,6 @@ import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-s
 import firebase from 'react-native-firebase';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Icon as AddIcon} from 'react-native-elements';
 import Modal from 'react-native-modal';
 
 import CreateCategoryEx from "../components/CreateCategoryEx.js";
@@ -122,28 +122,32 @@ export default class EditCategories extends Component {
             tabBarTextStyle = {{fontSize: 20}}
           >
             <ScrollView tabLabel='Expenditure'>
-            <Modal isVisible = {this.state.isExModalVisible}>
-                  <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
-            </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalEx()} />
-            {this.state.expenseCategories.map((cat) => {    
-                    return (            
-                    <View key = {cat.id} style = {styles.item}>
-                        <Icon 
-                            size = {20} 
-                            name={this.getCategoryIcon("expenditure", cat.title)} 
-                            style = {styles.iconStyle}/>
-                        <Text style = {styles.itemText}>{cat.title}</Text>
-                    </View>
-                    )
-                })}
+              <Modal isVisible = {this.state.isExModalVisible}>
+                    <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
+              </Modal>
+              <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalEx()}>
+                  <Text style = { styles.buttonText }>ADD CATEGORY</Text>
+              </TouchableOpacity>
+              {this.state.expenseCategories.map((cat) => {    
+                      return (            
+                      <View key = {cat.id} style = {styles.item}>
+                          <Icon 
+                              size = {20} 
+                              name={this.getCategoryIcon("expenditure", cat.title)} 
+                              style = {styles.iconStyle}/>
+                          <Text style = {styles.itemText}>{cat.title}</Text>
+                      </View>
+                      )
+                  })}
             </ScrollView>
             
             <ScrollView tabLabel='Income'>
             <Modal isVisible = {this.state.isInModalVisible}>
                   <CreateCategoryIn toggleModalChild = {this.toggleModalIn}/>
             </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalIn()} />
+            <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalIn()}>
+                  <Text style = { styles.buttonText }>ADD CATEGORY</Text>
+            </TouchableOpacity>
             {this.state.incomeCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>
@@ -179,10 +183,20 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 10
     },
-    button: {
-        padding: 10,
-        fontSize: 18,
-        height: 50
+    addButton: {
+        paddingTop: 10,
+        height: 50,
+        textAlign: "center",
+        textAlignVertical: "center",
+        backgroundColor: "#8293FF",
+        alignItems: "center"
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#fff",
+        textAlign: "center",
+        textAlignVertical: "center"
     },
     item: {
         height: 50,
