@@ -2,26 +2,16 @@ import React, { Component } from "react";
 import { 
     StyleSheet,
     View, 
-    Text, 
-    ImageBackground,
-    Animated,
-    Image,
-    Easing,
-    Dimensions
+    Button
 } from "react-native";
 
-
-import { Icon } from 'react-native-elements'
-import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import moment from 'moment';
 import Modal from 'react-native-modal';
-import * as Progress from 'react-native-progress';
 
 import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
-import { declareExportAllDeclaration } from "@babel/types";
 import Achievements from "./Achievements";
 
 
@@ -105,7 +95,6 @@ export default class BudgetScreen extends Component {
 
     refreshBudget() {
       this.state.budget.forEach((bud) => {
-        alert(bud.lastUpdate);
         if (bud.lastUpdate < this.state.startWeek) {
           this.updateAlpacas(bud.currAmount, bud.amount);
           this.updateCurrentAmount(bud.doc.id);
@@ -186,12 +175,7 @@ export default class BudgetScreen extends Component {
                     { renderAlpacas }
                 </View>
                 <View style = {styles.navigationContainer}>
-                    <Icon 
-                        name='add-circle-outline'
-                        type='material'
-                        color='#fff'
-                        size={45}
-                        onPress={() => this.toggleModal()} />
+                <Button title="Add budget" color = "#8293FF" onPress={() => this.toggleModal()} />
                         
                 </View>
                 </View>
@@ -208,8 +192,7 @@ const styles = StyleSheet.create({
     container: {
         height: "100%",
         width: "100%",
-        backgroundColor: "#1EE3CF"
-        
+        backgroundColor: "#DFE2FE" 
     },
     progressContainer: {
         marginTop: 10,
@@ -223,6 +206,13 @@ const styles = StyleSheet.create({
         height: "60%",
     },
     navigationContainer: {
-        flex: 0.15
-    }
+        position: "absolute",
+        width: "30%",
+        zIndex: 11,
+        bottom: 20,
+        right: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 8,
+    },
   });

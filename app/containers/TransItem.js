@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Button, 
         StyleSheet, 
         View, 
+        Alert,
         Text} from 'react-native';
 import {SwipeRow} from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome5';  
@@ -79,7 +80,6 @@ export default class TransItem extends React.PureComponent {
 
     deleteTrans(deleteItemId) {
         this.ref.doc(deleteItemId).delete().then(function() {
-             alert("Deleted")
          }).catch(function(error) {
              alert("Error removing document: ", error);
          });
@@ -183,7 +183,9 @@ export default class TransItem extends React.PureComponent {
             <SwipeRow rightOpenValue={-80}>
                 <View style={styles.standaloneRowBack}>
 							    <Text style={styles.backTextWhite}>Edit</Text>
-                  <Button title="Delete" color="#FB3E44" onPress={() => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category, this.props.date)}/>
+                  <Button title="Delete" color="#FB3E44" onPress = {() => Alert.alert("Confirm Delete", "Do you want to delete?", 
+                                [{text: 'Yes', onPress: () => this.deleteButton(this.props.amount, this.props.type,this.props.doc.id, this.props.category, this.props.date)}, 
+                                {text: 'No', onPress: () => console.log('Cancel')}])}/>
 				        </View>
                 <View style={styles.item}>
                   <View style = {styles.leftBox}>
@@ -203,7 +205,7 @@ export default class TransItem extends React.PureComponent {
 const incomeStyle = StyleSheet.create({
     item: {
         height: 50,
-        backgroundColor: "#7ACCC7",
+        backgroundColor: "#CADEFC",
         flexDirection: 'row',
         alignItems: 'center',
    

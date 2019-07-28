@@ -5,7 +5,9 @@ import {
     View, 
     ScrollView,
     Text,
-    Button
+    Button,
+    TouchableOpacity,
+    Alert
 } from "react-native";
 
 
@@ -13,11 +15,11 @@ import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-s
 import firebase from 'react-native-firebase';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Icon as AddIcon} from 'react-native-elements';
 import Modal from 'react-native-modal';
 
 import CreateCategoryEx from "../components/CreateCategoryEx.js";
 import CreateCategoryIn from "../components/CreateCategoryIn.js";
+
 
 export default class EditCategories extends Component {
     constructor() {
@@ -114,25 +116,55 @@ export default class EditCategories extends Component {
         this.setState({ isInModalVisible: !this.state.isInModalVisible });
     }
 
+    deleteExCategory(deleteItemId) {
+      this.expense_categories.doc(deleteItemId).delete().then(function() {
+           
+       }).catch(function(error) {
+           alert("Error removing document: ", error);
+       });
+   }
+
+   deleteInCategory(deleteItemId) {
+    this.income_categories.doc(deleteItemId).delete().then(function() {
+         
+     }).catch(function(error) {
+         alert("Error removing document: ", error);
+     });
+ }
+
     render() {
         return(      
            <ScrollableTabView
             style={styles.container}
             renderTabBar={() => <DefaultTabBar backgroundColor='rgba(255, 255, 255, 0.7)'/>}
+            tabBarTextStyle = {{fontSize: 20}}
           >
             <ScrollView tabLabel='Expenditure'>
             <Modal isVisible = {this.state.isExModalVisible}>
                   <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
             </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalEx()} />
+            <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalEx()}>
+                  <Text style = { styles.buttonText }>Add Category</Text>
+            </TouchableOpacity>
             {this.state.expenseCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>
+                      <View style = {styles.leftBox}>
                         <Icon 
                             size = {20} 
                             name={this.getCategoryIcon("expenditure", cat.title)} 
                             style = {styles.iconStyle}/>
                         <Text style = {styles.itemText}>{cat.title}</Text>
+                      </View>
+                      <TouchableOpacity 
+                            onPress = {() => Alert.alert("Confirm Delete", "Do you want to delete?", 
+                                [{text: 'Yes', onPress: () => this.deleteExCategory(cat.doc.id)}, 
+                                {text: 'No', onPress: () => console.log('Cancel')}])}>
+                        <Icon
+                            size = {20}
+                            name = "trash"
+                            style = {styles.deleteIcon}/>
+                      </TouchableOpacity>
                     </View>
                     )
                 })}
@@ -142,15 +174,28 @@ export default class EditCategories extends Component {
             <Modal isVisible = {this.state.isInModalVisible}>
                   <CreateCategoryIn toggleModalChild = {this.toggleModalIn}/>
             </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalIn()} />
+            <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalIn()}>
+                  <Text style = { styles.buttonText }>Add Category</Text>
+            </TouchableOpacity>
             {this.state.incomeCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>
+                      <View style = {styles.leftBox}>
                         <Icon 
                             size = {20} 
                             name={this.getCategoryIcon("income", cat.title)} 
                             style = {styles.iconStyle}/>
                         <Text style = {styles.itemText}>{cat.title}</Text>
+                        </View>
+                        <TouchableOpacity 
+                            onPress = {() => Alert.alert("Confirm Delete", "Do you want to delete?", 
+                                [{text: 'Yes', onPress: () => this.deleteInCategory(cat.doc.id)}, 
+                                {text: 'No', onPress: () => console.log('Cancel')}])}>
+                        <Icon
+                            size = {20}
+                            name = "trash"
+                            style = {styles.deleteIcon}/>
+                      </TouchableOpacity>
                     </View>
                     )
                 })}
@@ -164,6 +209,11 @@ export default class EditCategories extends Component {
  * StyleSheet
  */
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+        height: 100,
+        paddingTop: 25
+    },
     separator: {
         height: 30,
         width: "100%"
@@ -173,10 +223,20 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 10
     },
-    button: {
-        padding: 10,
-        fontSize: 18,
-        height: 50
+    addButton: {
+        paddingTop: 10,
+        height: 50,
+        textAlign: "center",
+        textAlignVertical: "center",
+        backgroundColor: "#8293FF",
+        alignItems: "center"
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#fff",
+        textAlign: "center",
+        textAlignVertical: "center"
     },
     item: {
         height: 50,
@@ -193,6 +253,13 @@ const styles = StyleSheet.create({
     itemText: {
         color: "black",
         fontSize: 17,
-        marginLeft: '5%'
+        marginLeft: '10%'
+    },
+    deleteIcon: {
+      alignSelf: 'flex-end' && 'center',
+    },
+    leftBox: {
+      flexDirection: 'row',
+      width: '85%'
     },
 });

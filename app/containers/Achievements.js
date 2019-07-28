@@ -39,7 +39,7 @@ export default class Achievements extends Component {
     render() {
         return (
             <View style = {styles.main }>
-                <Text style = { styles.header }>ACHIEVEMENTS</Text>
+                <Text style = { styles.header }>Achievements</Text>
                 <FlatGrid
                     itemDimension={ 130 }
                     items={ Achievements.items }
@@ -62,20 +62,22 @@ export default class Achievements extends Component {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
+        backgroundColor: "#8293FF"
     },
     header: {
-        fontSize: 30,
+        fontSize: 25,
         height: 75,
         fontWeight: '600',
         textAlign: "center",
         textAlignVertical: "bottom",
-        color: "#000000",
+        color: "#fff",
         padding: 10,
+        backgroundColor: "#8293FF"
     },
     gridView: {
         marginTop: 20,
         flex: 1,
-        backgroundColor: "#EAF5FF",
+        backgroundColor: "#DFE2FE"
     },
     itemContainer: {
         justifyContent: 'flex-end',
