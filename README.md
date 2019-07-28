@@ -2,6 +2,9 @@
 <img src="readme_images/main_alpaca.png" width="250" height="250" title="Alpacash">
 Alpacash is a gamified financial tracker that aims to engage its users to save more and derive excitement from managing their income and expenditure. It is a cross-platform mobile application with a clean and functional interface.
 
+## Level of Achievement
+Alpacash is a project under Orbital, an independent software development project module offered by the School of Computing. Our level of achievement is **Gemini**.
+
 ## Motivation
 This application idea came about because we saw a trend of individuals downloading financial trackers but failing to keep up with updating their tracker. We thus wanted to develop an application that would engage its users to continuously use and open the app. In addition, we wanted Alpacash to be clean, intuitive and easy to use.
 
@@ -84,5 +87,5 @@ View all alpacas collected and collect them all!
 * [Firebase](https://firebase.google.com/)
 
 ## Authors
-* **Jolyn Tan** - [Github](https://github.com/jolynnn8D)
-* **Valary Lim** - [Github](https://github.com/ValaryLim)
+* **Jolyn Tan** - A0188200M - [Github](https://github.com/jolynnn8D)
+* **Valary Lim** - A0190343L - [Github](https://github.com/ValaryLim)
