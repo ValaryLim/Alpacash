@@ -18,6 +18,11 @@ import Alpaca from "./Alpaca";
 export default class MovableAlpaca extends Component {
     constructor() {
         super();
+       
+    }
+
+    returnX() {
+        Alpaca.returnXCoordinates()
     }
 
     render() {

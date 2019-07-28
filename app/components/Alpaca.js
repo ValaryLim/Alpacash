@@ -33,9 +33,10 @@ export default class Alpaca extends Component {
             faceLeft: this.generateRandomInitialDirection(),
             level: 1,
             source: sourceLink = require('../assets/images/alpacas/alpaca5_flipped.png'),
-            sourceFlipped: sourceLink = require('../assets/images/alpacas/alpaca5_flipped.png')
+            sourceFlipped: sourceLink = require('../assets/images/alpacas/alpaca5_flipped.png'),
         }
     }
+
 
     generateRandomInitialDirection() {
         var direction = Math.random();
@@ -90,7 +91,7 @@ export default class Alpaca extends Component {
 
     flipImage() {
         this.setState({
-           faceLeft: !this.state.faceLeft
+           faceLeft: !this.state.faceLeft,
          });
          this.state.faceLeft === true ? 
             this.moveLeftAnimation() : this.moveRightAnimation();
