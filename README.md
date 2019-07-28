@@ -31,7 +31,11 @@ A step by step guide to get a development and testing environment running.
 
 ## Summary of Features
 ### Transactions
-1. Add, delete and edit transactions
+* Scroll through transactions weekly
+* Add transactions split by income/expenditure and categories
+* Delete transactions
+* Automatic balance calculation
+![](readme_images/transactions.gif)
 
 ### Budget
 1. Create weekly budgets
