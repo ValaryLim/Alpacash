@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#8293FF",
         textAlign: "center",
         textAlignVertical: "center",
-        height: "20%",
+        height: "18%",
         color: "#fff"
     },
     separator: {

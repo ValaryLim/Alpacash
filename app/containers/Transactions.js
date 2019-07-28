@@ -352,7 +352,7 @@ export default class Transactions extends Component {
                 {/* Add transactions popup window */}
                 
                 <View style = {styles.addButton}>
-                  <Button title="Add transaction" color = "#F66A73" onPress={() => this.toggleModal()} />
+                  <Button title="Add transaction" color = "#8293FF" onPress={() => this.toggleModal()} />
                   <Modal isVisible={this.state.isModalVisible}>
                 
                       <View style = {styles.addButtonWindow}>
@@ -429,10 +429,10 @@ export default class Transactions extends Component {
                           disabled={!this.state.title.length ||
                                     !this.state.amount.length ||
                                     !this.state.date.length}
-                          color="#00BDAA"
+                          color="#8E9FE6"
                           onPress={this.confirmButton}
                           />
-                       <Button fontColor = 'black' color = "#F17E7E" title="Cancel" onPress={() => this.toggleModal()} />
+                       <Button fontColor = 'black' color = "#F9B8BE" title="Cancel" onPress={() => this.toggleModal()} />
                         </View>      
                   </Modal>
                 </View>
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     zIndex: 11,
-    top: 450,
+    bottom: 20,
     right: 20,
     backgroundColor: "#fff",
     alignItems: "center",
