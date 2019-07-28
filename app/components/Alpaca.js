@@ -100,8 +100,8 @@ export default class Alpaca extends Component {
                     source = {
                         // if left is true, face left, else face right
                         this.state.faceLeft === true ?
-                            require('../assets/images/alpacas/alpaca6.png') :
-                            require('../assets/images/alpacas/alpaca6_flipped.png')
+                            require('../assets/images/alpacas/alpaca1.png') :
+                            require('../assets/images/alpacas/alpaca1_flipped.png')
                     }
                     style = {{ 
                         width: 60, 
