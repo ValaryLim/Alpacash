@@ -88,6 +88,31 @@ class CreateCategoryIn extends Component {
         this.setState({iconName: name})
     }
 
+    updateIconStyles(name) {
+        for (let i = 0; i < this.state.icons.length; i++) {
+            if (this.state.icons[i]["name"] === name) {
+                const iconsUpdate = this.state.icons;
+                iconsUpdate[i].selected = true;
+
+                this.setState({
+                    icons: iconsUpdate
+                });
+            } else {
+                const iconsUpdate = this.state.icons;
+                iconsUpdate[i].selected = false;
+
+                this.setState({
+                    icons: iconsUpdate
+                });
+            }
+        }
+    }
+
+    updateIcons(name) {
+        this.updateIconName(name);
+        this.updateIconStyles(name);
+    }
+    
     confirmCategory() {
         this.income_categories.add({
             checked: false,
@@ -119,12 +144,16 @@ class CreateCategoryIn extends Component {
                 </View>
                 <View style = {styles.iconBox}>
                     {this.state.icons.map((icon, index) => {return(
-                        <TouchableOpacity style = { styles.iconButton } onPress = {() => this.updateIconName(icon.name)}>
+                        <TouchableOpacity 
+                            key = { "I" + icon.id}
+                            style = { styles.iconButton } 
+                            onPress = {() => this.updateIcons(icon.name)}>
                             <Icon 
-                                key = {icon.id}
                                 size = {10} 
-                                name={icon.name} 
-                                style = {styles.iconStyle}
+                                name= {icon.name} 
+                                style = {
+                                    icon.selected === true ? styles.iconSelected : styles.iconUnselected
+                                }
                             />
                         </TouchableOpacity>
                             )
@@ -159,24 +188,24 @@ export default class CreateCategoryEx extends Component {
             id: 0,
             iconName: '',
             icons: [
-                {'id': 1, name: "ticket-alt"}, 
-                {'id': 2, name: "bolt"}, 
-                {'id': 3, name: "shopping-bag"}, 
-                {'id': 4, name: "bus"}, 
-                {'id': 5, name: "car"}, 
-                {'id': 6, name: "utensils"},
-                {'id': 7, name: "wallet"}, 
-                {'id': 8, name: "briefcase"},
-                {'id': 9, name: "home"},
-                {'id': 10, name: "tshirt"},
-                {'id': 11, name: "gift"}, 
-                {'id': 12, name: "book"},
-                {'id': 13, name: "heartbeat"},
-                {'id': 14, name: "desktop"},
-                {'id': 15, name: "dog"},
-                {'id': 16, name: "plane"},
-                {'id': 17, name: "coffee"},
-                {'id': 6, name: "beer"}],
+                {'id': 1, name: "ticket-alt", selected: false}, 
+                {'id': 2, name: "bolt", selected: false}, 
+                {'id': 3, name: "shopping-bag", selected: false}, 
+                {'id': 4, name: "bus", selected: false}, 
+                {'id': 5, name: "car", selected: false}, 
+                {'id': 6, name: "utensils", selected: false},
+                {'id': 7, name: "wallet", selected: false}, 
+                {'id': 8, name: "briefcase", selected: false},
+                {'id': 9, name: "home", selected: false},
+                {'id': 10, name: "tshirt", selected: false},
+                {'id': 11, name: "gift", selected: false}, 
+                {'id': 12, name: "book", selected: false},
+                {'id': 13, name: "heartbeat", selected: false},
+                {'id': 14, name: "desktop", selected: false},
+                {'id': 15, name: "dog", selected: false},
+                {'id': 16, name: "plane", selected: false},
+                {'id': 17, name: "coffee", selected: false},
+                {'id': 6, name: "beer", selected:false}],
             title: "",
         }
     }
@@ -237,6 +266,31 @@ export default class CreateCategoryEx extends Component {
           this.props.toggleModalChild();
     }
 
+    updateIconStyles(name) {
+        for (let i = 0; i < this.state.icons.length; i++) {
+            if (this.state.icons[i]["name"] === name) {
+                const iconsUpdate = this.state.icons;
+                iconsUpdate[i].selected = true;
+
+                this.setState({
+                    icons: iconsUpdate
+                });
+            } else {
+                const iconsUpdate = this.state.icons;
+                iconsUpdate[i].selected = false;
+
+                this.setState({
+                    icons: iconsUpdate
+                });
+            }
+        }
+    }
+
+    updateIcons(name) {
+        this.updateIconName(name);
+        this.updateIconStyles(name);
+    }
+
     render() {
         return(      
           <View style = {styles.container}>
@@ -252,12 +306,16 @@ export default class CreateCategoryEx extends Component {
                 </View>
                 <View style = {styles.iconBox}>
                     {this.state.icons.map((icon, index) => {return(
-                        <TouchableOpacity style = { styles.iconButton } onPress = {() => this.updateIconName(icon.name)}>
+                        <TouchableOpacity 
+                            key = { "E" + icon.id }
+                            style = { styles.iconButton } 
+                            onPress = {() => this.updateIcons(icon.name)}>
                             <Icon 
-                                key = {icon.id}
                                 size = {10} 
-                                name={icon.name} 
-                                style = {styles.iconStyle}
+                                name= {icon.name} 
+                                style = {
+                                    icon.selected === true ? styles.iconSelected : styles.iconUnselected
+                                }
                             />
                         </TouchableOpacity>
                             )
@@ -306,8 +364,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    iconStyle: {
+    iconUnselected: {
         color: "white",
+        width: "100%",
+        fontSize: 20,
+        marginLeft: 15,
+    },
+    iconSelected: {
+        color: "black",
         width: "100%",
         fontSize: 20,
         marginLeft: 15,
