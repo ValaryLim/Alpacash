@@ -34,9 +34,8 @@ export default class BudgetScreen extends Component {
         this.unsubscribe_trans = null;
         this.state = {
             isModalVisible: false,
-            trans: [],
+            budget: [],
             loading: true,
-            budgetAmount: [],
             startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
             endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
             alpacas: []
@@ -77,6 +76,7 @@ export default class BudgetScreen extends Component {
           budget, 
           loading: false
        });
+       this.refreshBudget();
     }
 
     onTransUpdate = (querySnapshot) => {
@@ -100,6 +100,34 @@ export default class BudgetScreen extends Component {
             trans,
             loading: false,
         });
+    }
+
+    refreshBudget() {
+      this.state.budget.forEach((bud) => {
+        alert(bud.lastUpdate);
+        if (bud.lastUpdate < this.state.startWeek) {
+          this.updateCurrentAmount(bud.doc.id);
+        }
+      })
+    }
+
+    updateCurrentAmount(docId) {
+      firebase.firestore().runTransaction(async transaction => {
+        const doc = await transaction.get(this.budget.doc(docId));
+        if (!doc.exists) {
+          transaction.set(this.budget.doc(docId), { currAmount: 0 });
+          return 0;
+        }
+
+        transaction.update(this.budget.doc(docId), {
+          currAmount: 0,
+          lastUpdate: moment().format("YYYY-MM-DD")
+        });
+        return 0;
+      })
+      .catch(error => {
+        console.log('Transaction failed: ', error);
+      });
     }
 
     toggleModal = () => {
