@@ -16,6 +16,13 @@ import Gestures from 'react-native-easy-gestures';
 import Alpaca from "./Alpaca";
 
 export default class MovableAlpaca extends Component {
+    constructor(args = {level: 1}) {
+        super();
+        this.state = {
+            level: args.level
+        }
+    }
+
     render() {
         return (
             <View>
@@ -23,10 +30,11 @@ export default class MovableAlpaca extends Component {
                     rotatable = {false}
                     scalable = {false} 
                     onEnd={(event, styles) => {
-                        alert(event.nativeEvent.locationX + event.nativeEvent.locationY);
+                        alert(event.nativeEvent.locationY);
+                        this.props.mergeAlpacaChild(event.nativeEvent.locationX, event.nativeEvent.locationY);
                     }}    
                 >
-                    <Alpaca style = {{ overflow: "hidden" }} />
+                    <Alpaca style = {{ overflow: "hidden" }} alpacaLevel = {"hi"}/>
                 </Gestures>
             </View>
         );

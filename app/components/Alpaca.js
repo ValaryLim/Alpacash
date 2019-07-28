@@ -9,7 +9,6 @@ import {
     Image,
     Easing,
     Dimensions,
-    PanResponder
 } from "react-native";
 
 export default class Alpaca extends Component {
@@ -31,12 +30,59 @@ export default class Alpaca extends Component {
         // Set state
         this.state = {
             faceLeft: this.generateRandomInitialDirection(),
-        };
+            level: 1,
+            source: this.generateImageSource(),
+            sourceFlipped: this.generateFlippedImageSource()
+        }
     }
 
     generateRandomInitialDirection() {
         var direction = Math.random();
         return (direction < 0.5);
+    }
+
+    generateImageSource() {
+        var alpacaLevel = this.state.level;
+        var sourceLink = "";
+        if (alpacaLevel === 1) {
+            sourceLink = require('../assets/images/alpacas/alpaca1.png');
+        } else if (alpacaLevel === 2) {
+            sourceLink = require('../assets/images/alpacas/alpaca2.png');
+        } else if (alpacaLevel === 3) {
+            sourceLink = require('../assets/images/alpacas/alpaca3.png');
+        } else if (alpacaLevel === 4) {
+            sourceLink = require('../assets/images/alpacas/alpaca4.png');
+        } else if (alpacaLevel === 5) {
+            sourceLink = require('../assets/images/alpacas/alpaca5.png');
+        } else {
+            sourceLink = require('../assets/images/alpacas/alpaca6.png');
+        }
+
+        this.setState( {
+            source: sourceLink,
+        });
+    }
+
+    generateFlippedImageSource() {
+        var alpacaLevel = this.state.level;
+        var sourceLink = "";
+        if (alpacaLevel === 1) {
+            sourceLink = require('../assets/images/alpacas/alpaca1_flipped.png');
+        } else if (alpacaLevel === 2) {
+            sourceLink = require('../assets/images/alpacas/alpaca2_flipped.png');
+        } else if (alpacaLevel === 3) {
+            sourceLink = require('../assets/images/alpacas/alpaca3_flipped.png');
+        } else if (alpacaLevel === 4) {
+            sourceLink = require('../assets/images/alpacas/alpaca4_flipped.png');
+        } else if (alpacaLevel === 5) {
+            sourceLink = require('../assets/images/alpacas/alpaca5_flipped.png');
+        } else {
+            sourceLink = require('../assets/images/alpacas/alpaca6_flipped.png');
+        }
+        
+        this.setState( {
+            sourceFlipped: sourceLink,
+        });
     }
 
     componentDidMount() {
@@ -93,6 +139,8 @@ export default class Alpaca extends Component {
 
       
     render() {
+        const {alpacaLevel} = this.props;
+        alert(this.props.alpacaLevel);
         return(
             <View>
                 <Animated.Image
@@ -100,8 +148,8 @@ export default class Alpaca extends Component {
                     source = {
                         // if left is true, face left, else face right
                         this.state.faceLeft === true ?
-                            require('../assets/images/alpacas/alpaca1.png') :
-                            require('../assets/images/alpacas/alpaca1_flipped.png')
+                            this.state.source :
+                            this.state.sourceFlipped
                     }
                     style = {{ 
                         width: 60, 

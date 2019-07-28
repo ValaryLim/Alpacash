@@ -39,13 +39,16 @@ export default class BudgetScreen extends Component {
             budgetAmount: [],
             startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
             endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
-            alpacas: [new MovableAlpaca(), new MovableAlpaca()]
+            alpacas: []
         }
     }
 
     componentDidMount() {
         this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate); 
         this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
+        // Add two initial level 1 alpacas
+        this.addAlpaca(1);
+        this.addAlpaca(1);
       }
     
     componentWillUnmount() {
@@ -76,36 +79,47 @@ export default class BudgetScreen extends Component {
     }
 
     onTransUpdate = (querySnapshot) => {
-      const trans = [];
-      querySnapshot.forEach((doc) => {
+        const trans = [];
+        querySnapshot.forEach((doc) => {
         const { title, amount, category, date, type } = doc.data();
-        
-        trans.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          title,
-          amount,
-          category,
-          date,
-          type
           
+        trans.push({
+            key: doc.id,
+            doc, // DocumentSnapshot
+            title,
+            amount,
+            category,
+            date,
+            type
+            
         });
-      });
+    });
     
-      this.setState({ 
-        trans,
-        loading: false,
-     });
+        this.setState({ 
+            trans,
+            loading: false,
+        });
     }
 
     toggleModal = () => {
-      this.setState({ isModalVisible: !this.state.isModalVisible });
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    }
+
+    addAlpaca = (level) => {
+        var a = new MovableAlpaca({ level: 1 });
+        this.state.alpacas.push(a);
+    }
+
+    mergeAlpaca = () => {
+        alert("merged");
+
     }
 
     render() {
         var renderAlpacas = [];
         for (let i = 0; i < this.state.alpacas.length; i++) {
-            renderAlpacas.push(<MovableAlpaca key = {i} src = {this.state.alpacas[i]} />)
+            renderAlpacas.push(<MovableAlpaca key = {i} src = {this.state.alpacas[i]} 
+                mergeAlpacaChild = {this.mergeAlpaca}/>)
         };
 
         return (
