@@ -52,11 +52,13 @@ A step by step guide to get a development and testing environment running.
 ![](readme_images/drag_alpacas.gif)
 
 ### Statistics
-View expenditure and income for the week, broken down into different categories
+View expenditure and income for the week, broken down into different categories.
+#### 
 ![](readme_images/statistics.gif)
 
 ### Settings - Achievements Page
 View all alpacas collected and collect them all!
+#### 
 ![](readme_images/achievements.gif)
 
 ### Settings - Edit Categories
