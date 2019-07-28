@@ -1,5 +1,5 @@
 # Alpacash
-![Alpacash]("./app/assets/images/achievements/achieved/alpaca5_achieved.png")
+![Alpacash](./app/assets/images/acheieved/alpaca5_achieved.png)
 
 Testing Alpacash
 ------
