@@ -119,6 +119,7 @@ export default class EditCategories extends Component {
            <ScrollableTabView
             style={styles.container}
             renderTabBar={() => <DefaultTabBar backgroundColor='rgba(255, 255, 255, 0.7)'/>}
+            tabBarTextStyle = {{fontSize: 20}}
           >
             <ScrollView tabLabel='Expenditure'>
             <Modal isVisible = {this.state.isExModalVisible}>
@@ -164,6 +165,11 @@ export default class EditCategories extends Component {
  * StyleSheet
  */
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+        height: 100,
+        paddingTop: 25
+    },
     separator: {
         height: 30,
         width: "100%"
