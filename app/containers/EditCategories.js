@@ -16,8 +16,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Icon as AddIcon} from 'react-native-elements';
 import Modal from 'react-native-modal';
 
-import CreateCategoryEx from "../components/CreateCategory";
-import CreateCategoryIn from "../components/CreateCategory";
+import CreateCategoryEx from "../components/CreateCategoryEx.js";
+import CreateCategoryIn from "../components/CreateCategoryIn.js";
 
 
 
@@ -142,7 +142,7 @@ export default class EditCategories extends Component {
             
             <ScrollView tabLabel='Income'>
             <Modal isVisible = {this.state.isInModalVisible}>
-                  <CreateCategoryEx toggleModalChild = {this.toggleModalIn}/>
+                  <CreateCategoryIn toggleModalChild = {this.toggleModalIn}/>
             </Modal>
             <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalIn()} />
             {this.state.incomeCategories.map((cat) => {    
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     button: {
         padding: 10,
         fontSize: 18,
-        height: 40
+        height: 50
     },
     item: {
         height: 50,
