@@ -26,13 +26,14 @@ export default class Alpaca extends Component {
         // Initialize value holders
         this.moveValueHolder = new Animated.ValueXY({x: initialX, y: initialY});
         this.flipValueHolder = new Animated.Value(0);
+        
 
         // Set state
         this.state = {
             faceLeft: this.generateRandomInitialDirection(),
             level: 1,
-            source: this.generateImageSource(),
-            sourceFlipped: this.generateFlippedImageSource()
+            source: sourceLink = require('../assets/images/alpacas/alpaca5_flipped.png'),
+            sourceFlipped: sourceLink = require('../assets/images/alpacas/alpaca5_flipped.png')
         }
     }
 
@@ -41,8 +42,7 @@ export default class Alpaca extends Component {
         return (direction < 0.5);
     }
 
-    generateImageSource() {
-        var alpacaLevel = this.state.level;
+    generateImageSource(alpacaLevel) {
         var sourceLink = "";
         if (alpacaLevel === 1) {
             sourceLink = require('../assets/images/alpacas/alpaca1.png');
@@ -58,13 +58,10 @@ export default class Alpaca extends Component {
             sourceLink = require('../assets/images/alpacas/alpaca6.png');
         }
 
-        this.setState( {
-            source: sourceLink,
-        });
+        return (sourceLink);
     }
 
-    generateFlippedImageSource() {
-        var alpacaLevel = this.state.level;
+    generateFlippedImageSource(alpacaLevel) {
         var sourceLink = "";
         if (alpacaLevel === 1) {
             sourceLink = require('../assets/images/alpacas/alpaca1_flipped.png');
@@ -80,9 +77,7 @@ export default class Alpaca extends Component {
             sourceLink = require('../assets/images/alpacas/alpaca6_flipped.png');
         }
         
-        this.setState( {
-            sourceFlipped: sourceLink,
-        });
+        return (sourceLink);
     }
 
     componentDidMount() {
@@ -139,8 +134,6 @@ export default class Alpaca extends Component {
 
       
     render() {
-        const {alpacaLevel} = this.props;
-        alert(this.props.alpacaLevel);
         return(
             <View>
                 <Animated.Image
@@ -148,8 +141,8 @@ export default class Alpaca extends Component {
                     source = {
                         // if left is true, face left, else face right
                         this.state.faceLeft === true ?
-                            this.state.source :
-                            this.state.sourceFlipped
+                            this.generateImageSource(this.props.childProp) :
+                            this.generateFlippedImageSource(this.props.childProp)
                     }
                     style = {{ 
                         width: 60, 
