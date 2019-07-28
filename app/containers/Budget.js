@@ -38,7 +38,8 @@ export default class BudgetScreen extends Component {
             loading: true,
             budgetAmount: [],
             startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
-            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD")
+            endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
+            alpacas: [new MovableAlpaca(), new MovableAlpaca()]
         }
     }
 
@@ -102,6 +103,11 @@ export default class BudgetScreen extends Component {
     }
 
     render() {
+        var renderAlpacas = [];
+        for (let i = 0; i < this.state.alpacas.length; i++) {
+            renderAlpacas.push(<MovableAlpaca key = {i} src = {this.state.alpacas[i]} />)
+        };
+
         return (
             <View style = {styles.container}>
                 <Modal isVisible = {this.state.isModalVisible}>
@@ -111,8 +117,7 @@ export default class BudgetScreen extends Component {
                     <BudgetChart/>
                 </View>
                 <View style = {styles.alpacaContainer} >
-                    <MovableAlpaca/>
-                    <MovableAlpaca/>
+                    { renderAlpacas }
                 </View>
                 <View style = {styles.navigationContainer}>
                     <Icon 
