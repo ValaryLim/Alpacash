@@ -6,12 +6,8 @@ import {
     ScrollView,
     Text,
     Button,
-<<<<<<< HEAD
-    TouchableOpacity
-=======
     TouchableOpacity,
     Alert
->>>>>>> master
 } from "react-native";
 
 
@@ -179,7 +175,7 @@ export default class EditCategories extends Component {
                   <CreateCategoryIn toggleModalChild = {this.toggleModalIn}/>
             </Modal>
             <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalIn()}>
-                  <Text style = { styles.buttonText }>ADD CATEGORY</Text>
+                  <Text style = { styles.buttonText }>Add Category</Text>
             </TouchableOpacity>
             {this.state.incomeCategories.map((cat) => {    
                     return (            

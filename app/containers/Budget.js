@@ -2,27 +2,16 @@ import React, { Component } from "react";
 import { 
     StyleSheet,
     View, 
-    Text, 
-    ImageBackground,
-    Animated,
-    Image,
-    Easing,
-    Dimensions,
     Button
 } from "react-native";
 
-
-import { Icon } from 'react-native-elements'
-import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import moment from 'moment';
 import Modal from 'react-native-modal';
-import * as Progress from 'react-native-progress';
 
 import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
-import { declareExportAllDeclaration } from "@babel/types";
 import Achievements from "./Achievements";
 
 
@@ -203,12 +192,7 @@ const styles = StyleSheet.create({
     container: {
         height: "100%",
         width: "100%",
-<<<<<<< HEAD
-        backgroundColor: "#1EE3CF"  
-=======
-        backgroundColor: "#B5B7D4"
-        
->>>>>>> master
+        backgroundColor: "#DFE2FE" 
     },
     progressContainer: {
         marginTop: 10,
@@ -225,7 +209,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: "30%",
         zIndex: 11,
-        top: 450,
+        bottom: 20,
         right: 20,
         alignItems: "center",
         justifyContent: "center",
