@@ -1,5 +1,7 @@
 # Alpacash
-![](readme_images/main_alpaca.png){:height="250px" width="250px"}
+<p align = "center">
+    <img src="readme_images/main_alpaca.png" width="250" height="250" title="Alpacash">
+</p>
 
 Testing Alpacash
 ------
