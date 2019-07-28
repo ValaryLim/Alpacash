@@ -3,20 +3,16 @@ import React, { Component } from "react";
 import { 
     StyleSheet,
     View, 
-    ScrollView,
     Text,
-    Button
+    TextInput,
 } from "react-native";
 
-
+import { Button } from 'native-base';
 
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view-forked'
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Icon as AddIcon} from 'react-native-elements';
-import Modal from 'react-native-modal';
 
-import CreateCategory from "../components/CreateCategory";
 
 
 
@@ -29,9 +25,9 @@ export default class EditCategories extends Component {
         this.unsubscribe_income_categories = null;
         this.state = {
             loading: true,
-            isModalVisible: false,
             expenseCategories: [],
             incomeCategories: [],
+            title: "",
         }
     }
 
@@ -88,67 +84,36 @@ export default class EditCategories extends Component {
        });
      }
 
-     getCategoryIcon(type, title) {
-        var icon;
-        if (type == 'expenditure') {
-        this.state.expenseCategories.map((cat) => {
-          if(cat.title == title) {
-            icon = cat.icon;
-          }
-        }); 
-      } else {
-        this.state.incomeCategories.map((cat) => {
-          if(cat.title == title) {
-            icon = cat.icon;
-          }
-        }); 
+     updateCategoryTitle(title) {
+        this.setState({title: title})
       }
-        return icon;
-    }
-
-    toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible });
-    }
 
     render() {
         return(      
-           <ScrollableTabView
-            style={styles.container}
-            renderTabBar={() => <DefaultTabBar backgroundColor='rgba(255, 255, 255, 0.7)'/>}
-          >
-            <ScrollView tabLabel='Expenditure'>
-            <Modal isVisible = {this.state.isModalVisible}>
-                  <CreateCategory toggleModalChild = {this.toggleModal}/>
-            </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModal()} />
-            {this.state.expenseCategories.map((cat) => {    
-                    return (            
-                    <View key = {cat.id} style = {styles.item}>
-                        <Icon 
-                            size = {20} 
-                            name={this.getCategoryIcon("expenditure", cat.title)} 
-                            style = {styles.iconStyle}/>
-                        <Text style = {styles.itemText}>{cat.title}</Text>
-                    </View>
-                    )
-                })}
-            </ScrollView>
-            
-            <ScrollView tabLabel='Income'>
-            {this.state.incomeCategories.map((cat) => {    
-                    return (            
-                    <View key = {cat.id} style = {styles.item}>
-                        <Icon 
-                            size = {20} 
-                            name={this.getCategoryIcon("income", cat.title)} 
-                            style = {styles.iconStyle}/>
-                        <Text style = {styles.itemText}>{cat.title}</Text>
-                    </View>
-                    )
-                })}
-            </ScrollView>
-          </ScrollableTabView>
-
+          <View style = {styles.container}>
+              <View style = {styles.header}>
+                <TextInput style = {styles.categorytitle}
+                    placeholder='Enter category title'
+                    placeholderTextColor = 'white'
+                    autoCapitalize = 'characters'
+                    underlineColorAndroid = 'transparent'
+                    onChangeText = {(text) => this.updateCategoryTitle(text)}
+                    maxLength = {20}
+                />
+              </View>
+                <View style = {styles.footer}>
+                  <Button rounded success 
+                    style = {styles.confirmButton}
+                    onPress = {() => this.props.toggleModalChild()}> 
+                    <Text> Confirm</Text>
+                  </Button>
+                  <Button rounded danger
+                    style = {styles.confirmButton}
+                    onPress = {() => this.props.toggleModalChild()}>
+                    <Text> Delete </Text>
+                  </Button>
+                </View>
+              </View>
         );
     }
 }
@@ -171,6 +136,17 @@ const styles = StyleSheet.create({
         fontSize: 18,
         height: 40
     },
+    header: {
+        backgroundColor: "#F66A73",
+        height: '30%',
+        alignItems: 'center'
+      },
+      footer: {
+        backgroundColor: "#fff",
+        height: '20%',
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+      },
     item: {
         height: 50,
         backgroundColor: "#fff",
@@ -188,4 +164,10 @@ const styles = StyleSheet.create({
         fontSize: 17,
         marginLeft: '5%'
     },
+    confirmButton: {
+        width: 100,
+        justifyContent: 'center',
+        marginLeft: '10%',
+        marginRight: '10%'
+      }
 });
