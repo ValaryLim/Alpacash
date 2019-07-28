@@ -7,7 +7,8 @@ import {
     Animated,
     Image,
     Easing,
-    Dimensions
+    Dimensions,
+    Button
 } from "react-native";
 
 
@@ -105,7 +106,6 @@ export default class BudgetScreen extends Component {
 
     refreshBudget() {
       this.state.budget.forEach((bud) => {
-        alert(bud.lastUpdate);
         if (bud.lastUpdate < this.state.startWeek) {
           this.updateAlpacas(bud.currAmount, bud.amount);
           this.updateCurrentAmount(bud.doc.id);
@@ -186,12 +186,7 @@ export default class BudgetScreen extends Component {
                     { renderAlpacas }
                 </View>
                 <View style = {styles.navigationContainer}>
-                    <Icon 
-                        name='add-circle-outline'
-                        type='material'
-                        color='#fff'
-                        size={45}
-                        onPress={() => this.toggleModal()} />
+                <Button title="Add budget" color = "#8293FF" onPress={() => this.toggleModal()} />
                         
                 </View>
                 </View>
@@ -208,7 +203,7 @@ const styles = StyleSheet.create({
     container: {
         height: "100%",
         width: "100%",
-        backgroundColor: "#1EE3CF"
+        backgroundColor: "#B5B7D4"
         
     },
     progressContainer: {
@@ -223,6 +218,13 @@ const styles = StyleSheet.create({
         height: "60%",
     },
     navigationContainer: {
-        flex: 0.15
-    }
+        position: "absolute",
+        width: "30%",
+        zIndex: 11,
+        top: 450,
+        right: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 8,
+    },
   });
