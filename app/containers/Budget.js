@@ -22,6 +22,7 @@ import MovableAlpaca from "../components/MovableAlpaca";
 import BudgetSetting from './BudgetSetting.js';
 import BudgetChart from '../components/BudgetChart.js'
 import { declareExportAllDeclaration } from "@babel/types";
+import Achievements from "./Achievements";
 
 
 
@@ -45,14 +46,16 @@ export default class BudgetScreen extends Component {
     componentDidMount() {
         this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate); 
         this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
+        
+        // Add one initial level 1 alpacas
         this.addAlpaca(1);
-        // Add two initial level 1 alpacas
       }
     
     componentWillUnmount() {
         this.unsubscribe_budget();
         this.unsubscribe_trans();
     }
+
 
     onBudgetUpdate = (querySnapshot) => {
         const budget = [];
@@ -114,44 +117,23 @@ export default class BudgetScreen extends Component {
       const percentage = curr/total; 
       if(curr > total) {
          this.addAlpaca(1);
+         Achievements.achievedLevel(1);
        } else if (percentage > 0.8) {
          this.addAlpaca(2);
+         Achievements.achievedLevel(2);
        } else if (percentage > 0.6) {
          this.addAlpaca(3);
+         Achievements.achievedLevel(3);
        } else if (percentage > 0.4) {
          this.addAlpaca(4);
+         Achievements.achievedLevel(4);
        } else if (percentage > 0.2) {
          this.addAlpaca(5);
+         Achievements.achievedLevel(5);
        } else {
          this.addAlpaca(6);
+         Achievements.achievedLevel(6);
        }
-    }
-    updateCurrentAmount(docId) {
-      firebase.firestore().runTransaction(async transaction => {
-        const doc = await transaction.get(this.budget.doc(docId));
-        if (!doc.exists) {
-          transaction.set(this.budget.doc(docId), { currAmount: 0 });
-          return 0;
-        }
-
-        transaction.update(this.budget.doc(docId), {
-          currAmount: 0,
-          lastUpdate: moment().format("YYYY-MM-DD")
-        });
-        return 0;
-      })
-      .catch(error => {
-        console.log('Transaction failed: ', error);
-      });
-    }
-
-    refreshBudget() {
-      this.state.budget.forEach((bud) => {
-        alert(bud.lastUpdate);
-        if (bud.lastUpdate < this.state.startWeek) {
-          this.updateCurrentAmount(bud.doc.id);
-        }
-      })
     }
 
     updateCurrentAmount(docId) {
@@ -183,25 +165,6 @@ export default class BudgetScreen extends Component {
           'level': level
         })
     }
-
-    mergeAlpaca = (locationX, locationY) => {
-        var mergingAlpacas = {};
-
-        for (let i = 0; i < this.state.alpacas.length; i++) {
-            // Get location of each alpaca
-            var a = this.state.alpacas[i].alpaca;
-            
-          }
-            // If location is within 50 (width) and 200(height) 
-            // Check if any alpacas have the same level =>
-            // if yes =>
-            // 1. add a higher level alpaca
-            // 2. remove the 2 alpacas
-
-            // else 
-            // push alpaca and length in the format {length:alpaca}
-        }
-    
 
     render() {
         var renderAlpacas = [];

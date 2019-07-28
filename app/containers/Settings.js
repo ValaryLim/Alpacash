@@ -11,7 +11,6 @@ import {
     createStackNavigator, 
     createAppContainer } from 'react-navigation';
 
-import Help from "./Help.js";
 import Achievements from "./Achievements.js";
 import EditCategories from "./EditCategories.js";
 
@@ -19,23 +18,20 @@ class SettingsScreen extends Component {
     render() {
         return(
             <View style = {styles.main}>
-                <TouchableOpacity 
-                    style = {styles.button}
-                    onPress = {() => this.props.navigation.navigate('Achievements')}>
-                    <Text>Achievements</Text>
-                </TouchableOpacity>
-                <View style = {styles.separator}></View>
-                <TouchableOpacity 
-                    style = {styles.button}
-                    onPress = {() => this.props.navigation.navigate('EditCategories')}>
-                    <Text>Edit Categories</Text>
-                </TouchableOpacity>
-                <View style = {styles.separator}></View>
-                <TouchableOpacity 
-                    style = {styles.button}
-                    onPress = {() => this.props.navigation.navigate('Help')}>
-                    <Text>Help</Text>
-                </TouchableOpacity>
+                <Text style = {styles.headerText}>Settings</Text>
+                <View style = {styles.tabs}>
+                    <TouchableOpacity 
+                        style = {styles.button}
+                        onPress = {() => this.props.navigation.navigate('Achievements')}>
+                        <Text style = {styles.text}>Achievements</Text>
+                    </TouchableOpacity>
+                    <View style = {styles.separator}></View>
+                    <TouchableOpacity 
+                        style = {styles.button}
+                        onPress = {() => this.props.navigation.navigate('EditCategories')}>
+                        <Text style = {styles.text}>Edit Categories</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
@@ -47,7 +43,6 @@ const RootStack = createStackNavigator(
       Settings: SettingsScreen,
       Achievements: Achievements,
       EditCategories: EditCategories,
-      Help: Help
     },
     {
       initialRouteName: 'Settings',
@@ -67,22 +62,37 @@ export default class Settings extends React.Component {
  * StyleSheet
  */
 const styles = StyleSheet.create({
+    main: {
+        flex: 1,
+    },
+    headerText: {
+        fontSize: 30,
+        fontWeight: "bold",
+        backgroundColor: "#EAF5FF",
+        textAlign: "center",
+        textAlignVertical: "center",
+        height: "20%",
+        color: "#000"
+    },
     separator: {
         height: 10,
         width: "100%"
     },
-    main: {
+    tabs: {
         flex: 1,
         margin: 10,
         alignItems: "center",
-        fontSize: 18
     },
     button: {
         justifyContent: "center",
         padding: 10,
-        fontSize: 18,
         height: "15%",
         width: "100%",
-        backgroundColor: "#DDD"
-    }
+        backgroundColor: "#EAF5FF"
+    },
+    text: {
+        fontSize: 20,
+        color: "#000",
+        marginLeft: 10,
+    },
 });

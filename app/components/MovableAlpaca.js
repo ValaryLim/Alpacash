@@ -31,10 +31,6 @@ export default class MovableAlpaca extends Component {
                 <Gestures
                     rotatable = {false}
                     scalable = {false} 
-                    onEnd={(event, styles) => {
-                        //alert(event.nativeEvent.locationY);
-                        this.props.mergeAlpacaChild(event.nativeEvent.locationX, event.nativeEvent.locationY);
-                    }}    
                 >
                     <Alpaca childProp = { this.props.level } style = {{ overflow: "hidden" }} />
                 </Gestures>
