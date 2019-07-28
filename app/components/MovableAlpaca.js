@@ -18,11 +18,6 @@ import Alpaca from "./Alpaca";
 export default class MovableAlpaca extends Component {
     constructor() {
         super();
-
-    }
-
-    
-    componentWillMount() {
     }
 
     render() {

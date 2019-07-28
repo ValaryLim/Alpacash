@@ -48,8 +48,8 @@ export default class BudgetScreen extends Component {
         this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
         // Add two initial level 1 alpacas
         this.addAlpaca(1);
-        this.addAlpaca(3);
-        this.addAlpaca(2);
+        this.addAlpaca(5);
+        this.addAlpaca(1);
       }
     
     componentWillUnmount() {
@@ -113,17 +113,29 @@ export default class BudgetScreen extends Component {
         })
     }
 
-    mergeAlpaca = (location) => {
-        //alert("merged");
-        // run through array of alpacas
-        // check location and compare with location of event
-        
+    mergeAlpaca = (locationX, locationY) => {
+        var mergingAlpacas = {};
+
+        for (let i = 0; i < this.state.alpacas.length; i++) {
+            // Get location of each alpaca
+            var a = this.state.alpacas[i]['alpaca'];
+
+            // If location is within 50 (width) and 200(height) 
+            // Check if any alpacas have the same level =>
+            // if yes =>
+            // 1. add a higher level alpaca
+            // 2. remove the 2 alpacas
+
+            // else 
+            // push alpaca and length in the format {length:alpaca}
+        }
     }
 
     render() {
         var renderAlpacas = [];
         for (let i = 0; i < this.state.alpacas.length; i++) {
-            renderAlpacas.push(<MovableAlpaca key = {i} src = {this.state.alpacas[i].alpaca} level = {this.state.alpacas[i].level}
+            renderAlpacas.push(<MovableAlpaca key = {i} src = {this.state.alpacas[i].alpaca} 
+                level = {this.state.alpacas[i].level}
                 mergeAlpacaChild = {this.mergeAlpaca}/>)
         };
 
