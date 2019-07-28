@@ -45,10 +45,8 @@ export default class BudgetScreen extends Component {
     componentDidMount() {
         this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate); 
         this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
+        this.addAlpaca(1);
         // Add two initial level 1 alpacas
-        this.addAlpaca(1);
-        this.addAlpaca(5);
-        this.addAlpaca(1);
       }
     
     componentWillUnmount() {
@@ -106,11 +104,28 @@ export default class BudgetScreen extends Component {
       this.state.budget.forEach((bud) => {
         alert(bud.lastUpdate);
         if (bud.lastUpdate < this.state.startWeek) {
+          this.updateAlpacas(bud.currAmount, bud.amount);
           this.updateCurrentAmount(bud.doc.id);
         }
       })
     }
 
+    updateAlpacas(curr, total) {
+      const percentage = curr/total; 
+      if(curr > total) {
+         this.addAlpaca(1);
+       } else if (percentage > 0.8) {
+         this.addAlpaca(2);
+       } else if (percentage > 0.6) {
+         this.addAlpaca(3);
+       } else if (percentage > 0.4) {
+         this.addAlpaca(4);
+       } else if (percentage > 0.2) {
+         this.addAlpaca(5);
+       } else {
+         this.addAlpaca(6);
+       }
+    }
     updateCurrentAmount(docId) {
       firebase.firestore().runTransaction(async transaction => {
         const doc = await transaction.get(this.budget.doc(docId));
@@ -146,8 +161,9 @@ export default class BudgetScreen extends Component {
 
         for (let i = 0; i < this.state.alpacas.length; i++) {
             // Get location of each alpaca
-            var a = this.state.alpacas[i]['alpaca'];
-
+            var a = this.state.alpacas[i].alpaca;
+            
+          }
             // If location is within 50 (width) and 200(height) 
             // Check if any alpacas have the same level =>
             // if yes =>
@@ -157,7 +173,7 @@ export default class BudgetScreen extends Component {
             // else 
             // push alpaca and length in the format {length:alpaca}
         }
-    }
+    
 
     render() {
         var renderAlpacas = [];
@@ -191,7 +207,7 @@ export default class BudgetScreen extends Component {
             
         );
     }
-}
+  }
 
 /**
  * StyleSheet
