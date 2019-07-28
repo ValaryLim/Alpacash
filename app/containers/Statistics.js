@@ -1,62 +1,47 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Svg, G } from "react-native-svg";
-
-// Import segment control tab
-import SegmentedControlTab from 'react-native-segmented-control-tab';
+import { StyleSheet, Text, ScrollView, View} from "react-native";
 
 // import income and expense files
 import StatisticsIncome from '../components/StatisticsIncome.js';
 import StatisticsExpense from '../components/StatisticsExpense.js';
 
+import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view-forked'
+
 export default class Statistics extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            customStyleIndex: 0
-        }
-    }
-
-    handleCustomIndexSelect = (index) => {
-        // handle tab selection
-        this.setState(prevState => ({ ...prevState, customStyleIndex: index}));
-    }
-
     render() {
-        const { customStyleIndex } = this.state;
-
         return (
-            <View style = {styles.container} >
-                <SegmentedControlTab
-                    values = {['Income', 'Expenditure']}
-                    selectedIndex = {customStyleIndex}
-                    onTabPress = {this.handleCustomIndexSelect}
-                    borderRadius = {0}
-                    tabsContainerStyle = {{height: 30, backgroundColor: '#DEDEDE'}}
-                    tabStyle={{
-                        backgroundColor: '#DEDEDE',
-                        borderWidth: 5,
-                        borderColor: 'transparent',
-                    }}
-                    activeTabStyle={{ backgroundColor: 'white', marginTop: 2 }}
-                    tabTextStyle={{ color: '#444444', fontSize: 12 }}
-                    activeTabTextStyle={{ color: '#212121' }}
-                />
+            <ScrollableTabView
+                style={styles.container}
+                renderTabBar={() => <DefaultTabBar backgroundColor='rgba(255, 255, 255, 0.7)'/>}
+                tabBarTextStyle = {{fontSize: 20}}
+            >
+                <ScrollView tabLabel='Expenditure'>
+                    <StatisticsExpense/>
+                </ScrollView>
+                    
+                <ScrollView tabLabel='Income'>
+                    <StatisticsIncome/>
+                </ScrollView>
+            </ScrollableTabView>
 
-                {customStyleIndex === 0 && (
-                    <StatisticsIncome />
-                )}
-                {customStyleIndex === 1 && (
-                    <StatisticsExpense />
-                )}
-            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    header: {
+        fontSize: 30,
+        height: 75,
+        fontWeight: '600',
+        textAlign: "center",
+        textAlignVertical: "bottom",
+        color: "#000000",
+        padding: 10,
+        backgroundColor: "white"
+    },
     container: {
-        alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        height: 100,
+        paddingTop: 25
     }
-  });
+});

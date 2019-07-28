@@ -14,7 +14,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       Transactions: { 
         screen: Transactions,  
         navigationOptions:{  
-          tabBarLabel:<Text style = {{fontSize:9}}>Transactions</Text>,   
+          tabBarLabel:<Text style = {{fontSize:10}}>Transactions</Text>,   
           tabBarIcon: ({ tintColor }) => (  
             <View>  
               <Icon style={[{color: tintColor}]} size={20} name={'credit-card'}/>  
@@ -26,7 +26,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       Budget: { 
         screen: Budget,  
         navigationOptions:{  
-          tabBarLabel:<Text style = {{fontSize:9}}>Budget</Text>,  
+          tabBarLabel:<Text style = {{fontSize:10}}>Budget</Text>,  
           tabBarIcon: ({ tintColor }) => (  
             <View>  
               <Icon style={[{color: tintColor}]} size={20} name={'piggy-bank'}/>  
@@ -38,7 +38,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       Statistics: { 
         screen: Statistics,  
         navigationOptions:{  
-          tabBarLabel:<Text style = {{fontSize:9}}>Statistics</Text>,  
+          tabBarLabel:<Text style = {{fontSize:10}}>Statistics</Text>,  
           tabBarIcon: ({ tintColor }) => (  
             <View>  
               <Icon style={[{color: tintColor}]} size={20} name={'chart-bar'}/>  
@@ -50,7 +50,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       Settings: {  
         screen: Settings,  
         navigationOptions:{  
-          tabBarLabel:<Text style = {{fontSize:9}}>Settings</Text>,
+          tabBarLabel:<Text style = {{fontSize:10}}>Settings</Text>,
           tabBarIcon: ({ tintColor }) => (  
             <View>  
               <Icon style={[{color: tintColor}]} size={20} name={'cog'}/>  
@@ -61,7 +61,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },  
     {  
       initialRouteName: "Transactions",  
-      activeColor: '#7BCCC7',  
+      activeColor: '#8293FF',  
       inactiveColor: '#72757E',  
       barStyle: { backgroundColor: '#ffffff' },
     },  

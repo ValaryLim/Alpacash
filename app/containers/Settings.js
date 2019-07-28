@@ -9,7 +9,8 @@ import {
 
 import { 
     createStackNavigator, 
-    createAppContainer } from 'react-navigation';
+    createAppContainer 
+} from 'react-navigation';
 
 import Achievements from "./Achievements.js";
 import EditCategories from "./EditCategories.js";
@@ -68,11 +69,11 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 30,
         fontWeight: "bold",
-        backgroundColor: "#EAF5FF",
+        backgroundColor: "#8293FF",
         textAlign: "center",
         textAlignVertical: "center",
-        height: "20%",
-        color: "#000"
+        height: "18%",
+        color: "#fff"
     },
     separator: {
         height: 10,
@@ -86,9 +87,9 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: "center",
         padding: 10,
-        height: "15%",
+        height: "17%",
         width: "100%",
-        backgroundColor: "#EAF5FF"
+        backgroundColor: "#DFE2FE",
     },
     text: {
         fontSize: 20,

@@ -205,7 +205,7 @@ export default class TransItem extends React.PureComponent {
 const incomeStyle = StyleSheet.create({
     item: {
         height: 50,
-        backgroundColor: "#7ACCC7",
+        backgroundColor: "#CADEFC",
         flexDirection: 'row',
         alignItems: 'center',
    
