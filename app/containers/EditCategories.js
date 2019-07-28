@@ -6,7 +6,8 @@ import {
     ScrollView,
     Text,
     Button,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from "react-native";
 
 
@@ -18,6 +19,7 @@ import Modal from 'react-native-modal';
 
 import CreateCategoryEx from "../components/CreateCategoryEx.js";
 import CreateCategoryIn from "../components/CreateCategoryIn.js";
+
 
 export default class EditCategories extends Component {
     constructor() {
@@ -114,6 +116,22 @@ export default class EditCategories extends Component {
         this.setState({ isInModalVisible: !this.state.isInModalVisible });
     }
 
+    deleteExCategory(deleteItemId) {
+      this.expense_categories.doc(deleteItemId).delete().then(function() {
+           
+       }).catch(function(error) {
+           alert("Error removing document: ", error);
+       });
+   }
+
+   deleteInCategory(deleteItemId) {
+    this.income_categories.doc(deleteItemId).delete().then(function() {
+         
+     }).catch(function(error) {
+         alert("Error removing document: ", error);
+     });
+ }
+
     render() {
         return(      
            <ScrollableTabView
@@ -122,23 +140,32 @@ export default class EditCategories extends Component {
             tabBarTextStyle = {{fontSize: 20}}
           >
             <ScrollView tabLabel='Expenditure'>
-              <Modal isVisible = {this.state.isExModalVisible}>
-                    <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
-              </Modal>
-              <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalEx()}>
-                  <Text style = { styles.buttonText }>ADD CATEGORY</Text>
-              </TouchableOpacity>
-              {this.state.expenseCategories.map((cat) => {    
-                      return (            
-                      <View key = {cat.id} style = {styles.item}>
-                          <Icon 
-                              size = {20} 
-                              name={this.getCategoryIcon("expenditure", cat.title)} 
-                              style = {styles.iconStyle}/>
-                          <Text style = {styles.itemText}>{cat.title}</Text>
+            <Modal isVisible = {this.state.isExModalVisible}>
+                  <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
+            </Modal>
+            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalEx()} />
+            {this.state.expenseCategories.map((cat) => {    
+                    return (            
+                    <View key = {cat.id} style = {styles.item}>
+                      <View style = {styles.leftBox}>
+                        <Icon 
+                            size = {20} 
+                            name={this.getCategoryIcon("expenditure", cat.title)} 
+                            style = {styles.iconStyle}/>
+                        <Text style = {styles.itemText}>{cat.title}</Text>
                       </View>
-                      )
-                  })}
+                      <TouchableOpacity 
+                            onPress = {() => Alert.alert("Confirm Delete", "Do you want to delete?", 
+                                [{text: 'Yes', onPress: () => this.deleteExCategory(cat.doc.id)}, 
+                                {text: 'No', onPress: () => console.log('Cancel')}])}>
+                        <Icon
+                            size = {20}
+                            name = "trash"
+                            style = {styles.deleteIcon}/>
+                      </TouchableOpacity>
+                    </View>
+                    )
+                })}
             </ScrollView>
             
             <ScrollView tabLabel='Income'>
@@ -151,11 +178,22 @@ export default class EditCategories extends Component {
             {this.state.incomeCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>
+                      <View style = {styles.leftBox}>
                         <Icon 
                             size = {20} 
                             name={this.getCategoryIcon("income", cat.title)} 
                             style = {styles.iconStyle}/>
                         <Text style = {styles.itemText}>{cat.title}</Text>
+                        </View>
+                        <TouchableOpacity 
+                            onPress = {() => Alert.alert("Confirm Delete", "Do you want to delete?", 
+                                [{text: 'Yes', onPress: () => this.deleteInCategory(cat.doc.id)}, 
+                                {text: 'No', onPress: () => console.log('Cancel')}])}>
+                        <Icon
+                            size = {20}
+                            name = "trash"
+                            style = {styles.deleteIcon}/>
+                      </TouchableOpacity>
                     </View>
                     )
                 })}
@@ -213,6 +251,13 @@ const styles = StyleSheet.create({
     itemText: {
         color: "black",
         fontSize: 17,
-        marginLeft: '5%'
+        marginLeft: '10%'
+    },
+    deleteIcon: {
+      alignSelf: 'flex-end' && 'center',
+    },
+    leftBox: {
+      flexDirection: 'row',
+      width: '85%'
     },
 });
