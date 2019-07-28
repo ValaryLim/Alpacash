@@ -56,7 +56,7 @@ export default class Statistics extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
+        flex: 1,
         backgroundColor: 'white'
     }
   });

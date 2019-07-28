@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     gridView: {
         marginTop: 20,
         flex: 1,
-        backgroundColor: "#EAF5FF",
+        backgroundColor: "#DFE2FE"
     },
     itemContainer: {
         justifyContent: 'flex-end',
