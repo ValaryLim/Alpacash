@@ -1,7 +1,8 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Alert} from "react-native";
 import firebase from 'react-native-firebase';
 import * as Progress from 'react-native-progress';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default class BudgetChart extends React.Component {
     constructor() {
@@ -45,6 +46,15 @@ export default class BudgetChart extends React.Component {
          });
     }
 
+    deleteBudget(deleteItemId) {
+        this.budget.doc(deleteItemId).delete().then(function() {
+             alert("Deleted")
+         }).catch(function(error) {
+             alert("Error removing document: ", error);
+         });
+     }
+    
+
     render() {
         if (this.state.loading) {
             return null; // or render a loading icon
@@ -61,12 +71,22 @@ export default class BudgetChart extends React.Component {
                             <Progress.Bar 
                             progress = { progressPercentage } 
                             width = {200} 
-                            height = {100}
+                            height = {50}
                             color = "#E42C64"
                             unfilledColor = "#FFFFFF"
                             borderColor = "#FFFFFF"
-                            />
+                            />      
                             <Text> {progressPercentage*100}% </Text>
+                            <TouchableOpacity 
+                            onPress = {() => Alert.alert("Confirm Delete", "Do you want to delete?", 
+                                [{text: 'Yes', onPress: () => this.deleteBudget(bud.doc.id)}, 
+                                {text: 'No', onPress: () => console.log('Cancel')}])}>
+                                <Icon
+                                    size = {15} 
+                                    name= "trash" 
+                                    style = {styles.deleteIcon}
+                                />
+                            </TouchableOpacity>
                         </View>
                     );
                 })}
@@ -85,5 +105,8 @@ const styles = StyleSheet.create({
         height: 20,
         marginBottom: 5,
         alignSelf: 'flex-end'
+    },
+    deleteIcon: {
+        marginRight: 5
     }
   });
