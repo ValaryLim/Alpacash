@@ -72,7 +72,7 @@ export default class BudgetChart extends React.Component {
                             progress = { progressPercentage } 
                             width = {200} 
                             height = {50}
-                            color = "#E42C64"
+                            color = "#8293FF"
                             unfilledColor = "#FFFFFF"
                             borderColor = "#FFFFFF"
                             />      

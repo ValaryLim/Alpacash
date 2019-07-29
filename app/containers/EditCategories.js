@@ -143,7 +143,9 @@ export default class EditCategories extends Component {
             <Modal isVisible = {this.state.isExModalVisible}>
                   <CreateCategoryEx toggleModalChild = {this.toggleModalEx}/>
             </Modal>
-            <Button title="Add category" color = "#F66A73" onPress={() => this.toggleModalEx()} />
+            <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalEx()}>
+                  <Text style = { styles.buttonText }>Add Category</Text>
+            </TouchableOpacity>
             {this.state.expenseCategories.map((cat) => {    
                     return (            
                     <View key = {cat.id} style = {styles.item}>
@@ -173,7 +175,7 @@ export default class EditCategories extends Component {
                   <CreateCategoryIn toggleModalChild = {this.toggleModalIn}/>
             </Modal>
             <TouchableOpacity style = { styles.addButton } onPress={() => this.toggleModalIn()}>
-                  <Text style = { styles.buttonText }>ADD CATEGORY</Text>
+                  <Text style = { styles.buttonText }>Add Category</Text>
             </TouchableOpacity>
             {this.state.incomeCategories.map((cat) => {    
                     return (            
