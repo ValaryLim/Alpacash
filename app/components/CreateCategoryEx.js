@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         height: "60%"
     },
     header: {
-        backgroundColor: "#F66A73",
+        backgroundColor: "#8293FF",
         height: '30%',
       },
       footer: {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     },
     iconBox: {
         flexDirection: 'row',
-        backgroundColor: "#F66A73",
+        backgroundColor: "#8293FF",
         flexWrap: 'wrap',
         justifyContent: "center",
         flex: 1,
