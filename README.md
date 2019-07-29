@@ -47,7 +47,7 @@ A step by step guide to get a development and testing environment running.
 * Display progress bar based on percentage of weekly budget spent
 * Delete budgets
 #### 
-![](readme_images/budget.gif)
+![](readme_images/budget_add.gif)
 
 * Earn alpacas of different levels depending on percentage of budget spent (the higher the percentage, the higher the level)
 * View your alpacas and have fun dragging them around
