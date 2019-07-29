@@ -3,7 +3,7 @@
 Alpacash is a gamified financial tracker that aims to engage its users to save more and derive excitement from managing their income and expenditure. It is a cross-platform mobile application with a clean and functional interface.
 
 ## Level of Achievement
-Alpacash is a project under Orbital, an independent software development project module offered by the School of Computing. Our level of achievement is **Gemini**.
+Alpacash is a project under Orbital, an independent software development project module offered by the School of Computing. Our level of achievement is **Apollo 11**.
 
 ## Motivation
 This application idea came about because we saw a trend of individuals downloading financial trackers but failing to keep up with updating their tracker. We thus wanted to develop an application that would engage its users to continuously use and open the app. In addition, we wanted Alpacash to be clean, intuitive and easy to use.
@@ -81,6 +81,15 @@ View all alpacas collected and collect them all!
 ## Problems Encountered
 * Firebase authentication cannot be added to React Native application
 * React Native does not currently offer a way to get the position of moving objects on the screen. We were thus unable to merge alpacas as initially intended.
+* Some alpacas get dragged even when the user is tapping/ dragging outside that alpacas' frame. Presently, we are unable to find a way to fix this bug as react-native does not offer an option to contain the dragging within the width of the image.
+
+## User Testing
+The following are some of the suggestions that users have made during user testing:
+* The Achievements page featuring all alpacas collected by user was implemented to motivate users to collect as many alpacas as possible. This page was a suggestion adopted from a consultation with Esther Tham, a senior consultant in Experience Design from ThoughtWorks.
+* Colours on all tabs (trans, budget, etc.) have been standardised upon suggestion by users for a cleaner interface or look.
+* Users found that they could type long titles for the budget that would run off the budget screen, causing the delete button to go out of screen. To resolve this, we limited the number of characters in the budget name.
+* Users found that they could input non-numerical values when adding Transactions, which would interfere with the calculation of our balance. This has not been fixed but will be fixed in the future.
+* Users found that the categories available in Milestone 2 were too limited for a Financial Tracker. We have since added the option for users to add or delete categories based on need in the Settings page. 
 
 ## Built With
 * [React Native](https://facebook.github.io/react-native/)
