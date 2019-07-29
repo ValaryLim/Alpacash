@@ -1,5 +1,4 @@
-# Alpacash
-<img src="readme_images/main_alpaca.png" width="250" height="250" title="Alpacash">
+![](readme_images/alpacash.png)
 Alpacash is a gamified financial tracker that aims to engage its users to save more and derive excitement from managing their income and expenditure. It is a cross-platform mobile application with a clean and functional interface.
 
 ## Level of Achievement
