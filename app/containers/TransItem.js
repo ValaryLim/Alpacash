@@ -94,9 +94,9 @@ export default class TransItem extends React.PureComponent {
           }
   
             const newBalance = type == "expenditure" 
-                  ? doc.data().total + parseInt(amount)
+                  ? doc.data().total + parseFloat(amount)
                   :  type == "income"
-                        ? doc.data().total - parseInt(amount)
+                        ? doc.data().total - parseFloat(amount)
                         : doc.data().total;
   
           transaction.update(this.balance, {
@@ -117,7 +117,7 @@ export default class TransItem extends React.PureComponent {
             return 0;
           }
   
-            const newAmount = doc.data().currAmount - parseInt(amount);
+            const newAmount = doc.data().currAmount - parseFloat(amount);
   
           transaction.update(this.budget.doc(docId), {
             currAmount: newAmount,

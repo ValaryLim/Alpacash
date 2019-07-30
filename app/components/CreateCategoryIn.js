@@ -45,6 +45,27 @@ export default class CreateCategoryIn extends Component {
                 {'id': 17, name: "coffee", selected: false},
                 {'id': 18, name: "beer", selected:false}],
             title: "",
+            colors: [
+                "#6892D5",
+                "#A64942",
+                "#837DFF",
+                "#FF8484",
+                "#D84C73",
+                "#FF8364",
+                "#90AEFF",
+                "#FDB44B",
+                "#657DC4",
+                "#3C1B1F",
+                "#FDAED8",
+                "#8AACFF",
+                "#638CCC",
+                "#11CBD7",
+                "#7189BF",
+                "#9EA9F0",
+                "#72D6C9",
+                "#FFC785",
+                "#DF7599",
+            ]
         }
     }
 
@@ -116,7 +137,7 @@ export default class CreateCategoryIn extends Component {
     confirmCategory() {
         this.income_categories.add({
             checked: false,
-            color: "#FFFFFF",
+            color: this.state.colors[this.state.id%19],
             icon: this.state.iconName,
             id: this.state.id,
             title: this.state.title

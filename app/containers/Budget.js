@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { 
     StyleSheet,
     View, 
+    Text, 
     Button
 } from "react-native";
 
@@ -21,24 +22,26 @@ export default class BudgetScreen extends Component {
         super();
         this.budget = firebase.firestore().collection('budget');
         this.trans = firebase.firestore().collection('trans');
+        this.alpacas = firebase.firestore().collection('alpacas');
+        this.ownedAlpacas = this.alpacas.doc('owned');
         this.unsubscribe_budget = null;
         this.unsubscribe_trans = null;
+        this.unsubscribe_alpacas = null;
         this.state = {
             isModalVisible: false,
             budget: [],
             loading: true,
             startWeek: moment().startOf('isoWeek').format("YYYY-MM-DD"),
             endWeek: moment().endOf('isoWeek').format("YYYY-MM-DD"),
-            alpacas: []
+            alpacas: [],
         }
     }
 
     componentDidMount() {
         this.unsubscribe_budget = this.budget.onSnapshot(this.onBudgetUpdate); 
         this.unsubscribe_trans = this.trans.onSnapshot(this.onTransUpdate);
-        
-        // Add one initial level 1 alpacas
-        this.addAlpaca(1);
+        this.unsubscribe_alpacas = this.alpacas.onSnapshot(this.onAlpacasUpdate);
+        this.renderAlpacas();
       }
     
     componentWillUnmount() {
@@ -93,6 +96,33 @@ export default class BudgetScreen extends Component {
         });
     }
 
+    onAlpacasUpdate = (querySnapshot) => {
+      const alpacas = [];
+      querySnapshot.forEach((doc) => {
+      const { level, owned } = doc.data();
+        
+      alpacas.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          level, 
+          owned
+      });
+      });
+  
+      this.setState({ 
+          alpacas,
+          loading: false,
+      });
+     }
+
+    renderAlpacas() {
+      this.state.alpacas.forEach((doc) => {
+        for (let i = 0; i < doc.owned; i++) {
+          this.addAlpaca(doc.level);
+        }
+      });
+    }
+
     refreshBudget() {
       this.state.budget.forEach((bud) => {
         if (bud.lastUpdate < this.state.startWeek) {
@@ -102,25 +132,51 @@ export default class BudgetScreen extends Component {
       })
     }
 
+    updateAlpacaDatabase(level) {
+      var docId;
+      this.state.alpacas.forEach((al) => {
+        if (al.level == level) {
+          docId = al.doc.id;
+        }
+      })
+      firebase.firestore().runTransaction(async transaction => {
+        const doc = await transaction.get(this.alpacas.doc(docId));
+        if (!doc.exists) {
+          transaction.set(this.alpacas.doc(docId), { level: level, owned: 0 });
+          return 0;
+        }
+        
+        const newAmount = doc.data().owned + 1;
+
+        transaction.update(this.alpacas.doc(docId), {
+          owned: newAmount,
+        });
+        return newAmount;
+      })
+      .catch(error => {
+        console.log('Transaction failed: ', error);
+      });
+    }
+
     updateAlpacas(curr, total) {
       const percentage = curr/total; 
       if(curr > total) {
-         this.addAlpaca(1);
+         this.updateAlpacaDatabase(1);
          Achievements.achievedLevel(1);
        } else if (percentage > 0.8) {
-         this.addAlpaca(2);
+         this.updateAlpacaDatabase(2);
          Achievements.achievedLevel(2);
        } else if (percentage > 0.6) {
-         this.addAlpaca(3);
+         this.updateAlpacaDatabase(3);
          Achievements.achievedLevel(3);
        } else if (percentage > 0.4) {
-         this.addAlpaca(4);
+         this.updateAlpacaDatabase(4);
          Achievements.achievedLevel(4);
        } else if (percentage > 0.2) {
-         this.addAlpaca(5);
+         this.updateAlpacaDatabase(5);
          Achievements.achievedLevel(5);
        } else {
-         this.addAlpaca(6);
+         this.updateAlpacaDatabase(6);
          Achievements.achievedLevel(6);
        }
     }
