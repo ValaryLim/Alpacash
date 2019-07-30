@@ -32,6 +32,20 @@ A step by step guide to get a development and testing environment running.
 5. Run "npm install"
 6. Run "react-native run-android"
 
+## User Stories
+The following are features that a user would have/ want in a financial tracker, based on a preliminary sensing when we asked our peers for their feedback/ opinions on the project.
+#### As a user of the financial tracker, I want to:
+1. Be able to add and delete my transactions
+2. Split my transactions based on income and expenditure, as well as different categories within income and expenditure
+3. Be able to customise the categories of transactions to suit my personal needs
+4. Set budgets to keep my spending in check
+5. View the percentage of my budget spent, and have it reset at regular intervals
+6. See the statistics behind my expenditure habits to understand where my money is going into
+7. Be incentivised to continue using the app to track my expenses and encourage me to save
+
+## Unique Selling Point
+The unique selling point of our financial tracker is in its gamified portion. In the market presently, there are gamified financial trackers but those trackers reward for **spending** rather than **saving**, where a certain amount of expenditure recorded by the user would give the user different items to collect, e.g. buildings. In our application, we tried to emphasise on the saving aspect of the tracker by giving alpacas based on the **percentage of budget spent**.
+
 ## Summary of Features
 ### Transactions
 * Scroll through transactions weekly and by day
