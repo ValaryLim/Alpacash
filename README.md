@@ -25,6 +25,14 @@ Android Studio (or working emulator of your choice)
 
 ### Installing
 A step by step guide to get a development and testing environment running.
+#### Option 1
+1. Install android studio
+2. Download the 'app-x86-release.apk' file
+3. Open your emulator in android studio
+4. Drag the .apk file into the emulator
+5. Open the Alpacash app on the emulator (Note: App will not open on its own, will need to find and click the app to open it)
+
+#### Option 2
 1. Install react native and android studio
 2. Clone Alpacash into your local repository
 3. Open your emulator
